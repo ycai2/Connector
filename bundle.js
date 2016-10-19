@@ -21506,6 +21506,10 @@
 	
 	var _dot2 = _interopRequireDefault(_dot);
 	
+	var _line = __webpack_require__(176);
+	
+	var _line2 = _interopRequireDefault(_line);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21523,9 +21527,17 @@
 	    var _this = _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
 	
 	    _this.state = {
-	      dotArray: _this.populateBoard()
+	      dotArray: _this.populateBoard(),
+	      selectStartX: 0,
+	      selectStartY: 0,
+	      selectEndX: 0,
+	      selectEndY: 0,
+	      drawing: false
 	    };
 	    _this.populateBoard = _this.populateBoard.bind(_this);
+	    _this.onMouseDown = _this.onMouseDown.bind(_this);
+	    _this.onMouseMove = _this.onMouseMove.bind(_this);
+	    _this.onMouseUp = _this.onMouseUp.bind(_this);
 	    return _this;
 	  }
 	
@@ -21536,31 +21548,84 @@
 	      for (var i = 0; i < this.props.width; i++) {
 	        var dotCol = [];
 	        for (var j = 0; j < this.props.height; j++) {
-	          dotCol.push("red");
+	          dotCol.push(Math.floor(Math.random() * 4 + 1));
 	        }
 	        dotArray.push(dotCol);
 	      }
 	      return dotArray;
 	    }
 	  }, {
+	    key: 'onMouseDown',
+	    value: function onMouseDown(e) {
+	      e.preventDefault();
+	      if (!this.state.drawing) {
+	        this.setState({
+	          selectStartX: e.screenX,
+	          selectStartY: e.screenY,
+	          selectEndX: e.screenX,
+	          selectEndY: e.screenY,
+	          drawing: true
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'onMouseMove',
+	    value: function onMouseMove(e) {
+	      e.preventDefault();
+	      if (this.state.drawing) {
+	        this.setState({
+	          selectEndX: e.screenX,
+	          selectEndY: e.screenY
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'onMouseUp',
+	    value: function onMouseUp(e) {
+	      e.preventDefault();
+	      if (this.state.drawing) {
+	        this.setState({
+	          selectStartX: 0,
+	          selectStartY: 0,
+	          selectEndX: 0,
+	          selectEndY: 0,
+	          drawing: false
+	        });
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+	
 	      return _react2.default.createElement(
-	        'ul',
-	        { className: 'board' },
-	        this.state.dotArray.map(function (col, col_num) {
-	          return _react2.default.createElement(
-	            'li',
-	            { key: col_num },
-	            _react2.default.createElement(
-	              'ul',
-	              { className: 'column' },
-	              col.map(function (dot, dotId) {
-	                return _react2.default.createElement(_dot2.default, { color: dot, key: dotId });
-	              })
-	            )
-	          );
-	        })
+	        'div',
+	        { className: 'game' },
+	        _react2.default.createElement(
+	          'ul',
+	          {
+	            className: 'board',
+	            onMouseMove: this.onMouseMove,
+	            onMouseUp: this.onMouseUp
+	          },
+	          this.state.dotArray.map(function (col, col_num) {
+	            return _react2.default.createElement(
+	              'li',
+	              { key: col_num },
+	              _react2.default.createElement(
+	                'ul',
+	                { className: 'column' },
+	                col.map(function (dot, dotId) {
+	                  return _react2.default.createElement(_dot2.default, {
+	                    color: dot,
+	                    key: dotId,
+	                    onMouseDown: _this2.onMouseDown
+	                  });
+	                })
+	              )
+	            );
+	          })
+	        )
 	      );
 	    }
 	  }]);
@@ -21576,7 +21641,7 @@
 /* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -21599,17 +21664,20 @@
 	var Dot = function (_React$Component) {
 	  _inherits(Dot, _React$Component);
 	
-	  function Dot() {
+	  function Dot(props) {
 	    _classCallCheck(this, Dot);
 	
-	    return _possibleConstructorReturn(this, (Dot.__proto__ || Object.getPrototypeOf(Dot)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (Dot.__proto__ || Object.getPrototypeOf(Dot)).call(this, props));
 	  }
 	
 	  _createClass(Dot, [{
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement("li", {
-	        className: "dot hvr-ripple-out color-1" });
+	      var dotColor = this.props.color;
+	      return _react2.default.createElement('li', {
+	        className: 'dot hvr-ripple-out color-' + dotColor,
+	        onMouseDown: this.props.onMouseDown
+	      });
 	    }
 	  }]);
 	
@@ -21617,6 +21685,82 @@
 	}(_react2.default.Component);
 	
 	exports.default = Dot;
+
+/***/ },
+/* 175 */,
+/* 176 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Line = function (_React$Component) {
+	  _inherits(Line, _React$Component);
+	
+	  function Line() {
+	    _classCallCheck(this, Line);
+	
+	    return _possibleConstructorReturn(this, (Line.__proto__ || Object.getPrototypeOf(Line)).apply(this, arguments));
+	  }
+	
+	  _createClass(Line, [{
+	    key: 'render',
+	    value: function render() {
+	      var from = this.props.from;
+	      var to = this.props.to;
+	      if (to.x < from.x) {
+	        from = this.props.to;
+	        to = this.props.from;
+	      }
+	
+	      var len = Math.sqrt(Math.pow(from.x - to.x, 2) + Math.pow(from.y - to.y, 2));
+	      var angle = Math.atan((to.y - from.y) / (to.x - from.x));
+	
+	      var style = {
+	        position: 'absolute',
+	        transform: 'translate(' + (from.x - .5 * len * (1 - Math.cos(angle))) + 'px, ' + (from.y + .5 * len * Math.sin(angle)) + 'px) rotate(' + angle + 'rad)',
+	        width: len + 'px',
+	        height: 0 + 'px',
+	        borderBottom: this.props.style || '1px solid black'
+	      };
+	
+	      return _react2.default.createElement('div', { style: style });
+	    }
+	  }]);
+	
+	  return Line;
+	}(_react2.default.Component);
+	
+	Line.propTypes = {
+	  from: _react2.default.PropTypes.shape({
+	    x: _react2.default.PropTypes.number.isRequired,
+	    y: _react2.default.PropTypes.number.isRequired
+	  }),
+	  to: _react2.default.PropTypes.shape({
+	    x: _react2.default.PropTypes.number.isRequired,
+	    y: _react2.default.PropTypes.number.isRequired
+	  }),
+	  style: _react2.default.PropTypes.string
+	};
+	
+	exports.default = Line;
 
 /***/ }
 /******/ ]);
