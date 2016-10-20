@@ -21529,6 +21529,7 @@
 	    _this.state = {
 	      dotArray: _this.populateBoard(),
 	      connecting: false,
+	      connection: [],
 	      originColor: 0,
 	      origin: null
 	    };
@@ -21548,7 +21549,10 @@
 	      for (var i = 0; i < this.props.width; i++) {
 	        var dotCol = [];
 	        for (var j = 0; j < this.props.height; j++) {
-	          dotCol.push(Math.floor(Math.random() * 4 + 1));
+	          dotCol.push({
+	            id: j + i * this.props.height,
+	            color: Math.floor(Math.random() * 4 + 1)
+	          });
 	        }
 	        dotArray.push(dotCol);
 	      }
@@ -21556,14 +21560,17 @@
 	    }
 	  }, {
 	    key: 'onMouseDown',
-	    value: function onMouseDown(rowId, colId, originColor) {
+	    value: function onMouseDown(rowId, colId, dot) {
 	      var _this2 = this;
 	
+	      var originColor = dot.color;
 	      return function (e) {
 	        e.preventDefault();
+	        var newConnection = _this2.state.connection.concat(dot.id);
 	        if (!_this2.state.connecting) {
 	          _this2.setState({
 	            connecting: true,
+	            connection: newConnection,
 	            originColor: originColor,
 	            origin: { x: rowId, y: colId }
 	          });
@@ -21577,14 +21584,21 @@
 	    }
 	  }, {
 	    key: 'onMouseOver',
-	    value: function onMouseOver(rowId, colId, color) {
+	    value: function onMouseOver(rowId, colId, dot) {
 	      var _this3 = this;
 	
+	      var color = dot.color;
 	      return function (e) {
 	        e.preventDefault();
 	        if (_this3.state.connecting && color === _this3.state.originColor) {
 	          if (_this3.validConnect(_this3.state.origin, { x: rowId, y: colId })) {
-	            console.log(color);
+	            var newConnection = _this3.state.connection.concat(dot.id);
+	            console.log(dot);
+	            console.log(newConnection);
+	            _this3.setState({
+	              connection: newConnection,
+	              origin: { x: rowId, y: colId }
+	            });
 	          }
 	        }
 	      };
@@ -21596,6 +21610,7 @@
 	      if (this.state.connecting) {
 	        this.setState({
 	          connecting: false,
+	          connection: [],
 	          originColor: 0,
 	          origin: null
 	        });
@@ -21639,8 +21654,9 @@
 	                { className: 'column' },
 	                col.map(function (dot, rowId) {
 	                  return _react2.default.createElement(_dot2.default, {
-	                    color: dot,
 	                    key: rowId,
+	                    color: dot.color,
+	                    dotId: dot.id,
 	                    row_id: rowId,
 	                    col_id: colId,
 	                    onMouseDown: _this4.onMouseDown(rowId, colId, dot),
