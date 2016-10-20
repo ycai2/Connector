@@ -7,11 +7,7 @@ class Board extends React.Component {
     super(props);
     this.state = {
       dotArray: this.populateBoard(),
-      selectStartX: 0,
-      selectStartY: 0,
-      selectEndX: 0,
-      selectEndY: 0,
-      drawing: false
+      connecting: false
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -33,37 +29,24 @@ class Board extends React.Component {
 
   onMouseDown(e) {
     e.preventDefault();
-    if (!this.state.drawing) {
+    if (!this.state.connecting) {
       this.setState({
-        selectStartX: e.screenX,
-        selectStartY: e.screenY,
-        selectEndX: e.screenX,
-        selectEndY: e.screenY,
-        drawing: true
+        connecting: true
       });
+      
     }
   }
 
   onMouseMove(e) {
     e.preventDefault();
-    if (this.state.drawing) {
-      this.setState({
-        selectEndX: e.screenX,
-        selectEndY: e.screenY,
-      });
-    }
   }
 
   onMouseUp(e) {
     e.preventDefault();
-    if (this.state.drawing) {
+    if (this.state.connecting) {
       this.setState({
-        selectStartX: 0,
-        selectStartY: 0,
-        selectEndX: 0,
-        selectEndY: 0,
-        drawing: false,
-      })
+        connecting: false
+      });
     }
   }
 

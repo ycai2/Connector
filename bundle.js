@@ -21528,11 +21528,7 @@
 	
 	    _this.state = {
 	      dotArray: _this.populateBoard(),
-	      selectStartX: 0,
-	      selectStartY: 0,
-	      selectEndX: 0,
-	      selectEndY: 0,
-	      drawing: false
+	      connecting: false
 	    };
 	    _this.populateBoard = _this.populateBoard.bind(_this);
 	    _this.onMouseDown = _this.onMouseDown.bind(_this);
@@ -21558,13 +21554,9 @@
 	    key: 'onMouseDown',
 	    value: function onMouseDown(e) {
 	      e.preventDefault();
-	      if (!this.state.drawing) {
+	      if (!this.state.connecting) {
 	        this.setState({
-	          selectStartX: e.screenX,
-	          selectStartY: e.screenY,
-	          selectEndX: e.screenX,
-	          selectEndY: e.screenY,
-	          drawing: true
+	          connecting: true
 	        });
 	      }
 	    }
@@ -21572,24 +21564,14 @@
 	    key: 'onMouseMove',
 	    value: function onMouseMove(e) {
 	      e.preventDefault();
-	      if (this.state.drawing) {
-	        this.setState({
-	          selectEndX: e.screenX,
-	          selectEndY: e.screenY
-	        });
-	      }
 	    }
 	  }, {
 	    key: 'onMouseUp',
 	    value: function onMouseUp(e) {
 	      e.preventDefault();
-	      if (this.state.drawing) {
+	      if (this.state.connecting) {
 	        this.setState({
-	          selectStartX: 0,
-	          selectStartY: 0,
-	          selectEndX: 0,
-	          selectEndY: 0,
-	          drawing: false
+	          connecting: false
 	        });
 	      }
 	    }
