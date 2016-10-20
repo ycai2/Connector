@@ -14,10 +14,10 @@ class Board extends React.Component {
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseOver = this.onMouseOver.bind(this);
     this.validConnect = this.validConnect.bind(this);
+    this.handleConnection = this.handleConnection.bind(this);
   }
 
   populateBoard() {
@@ -27,6 +27,8 @@ class Board extends React.Component {
       for (let j = 0; j < this.props.height; j++) {
         dotCol.push({
           id: j + i * this.props.height,
+          colId: i,
+          rowId: j,
           color: Math.floor(Math.random() * 4 + 1)
         });
       }
@@ -51,38 +53,59 @@ class Board extends React.Component {
     }
   }
 
-  onMouseMove(e) {
-    e.preventDefault();
-  }
-
   onMouseOver(rowId, colId, dot) {
     const color = dot.color;
     return (e) => {
       e.preventDefault();
       if (this.state.connecting && color === this.state.originColor) {
         if (this.validConnect(this.state.origin, {x: rowId, y: colId})) {
-          const newConnection = this.state.connection.concat(dot.id);
-          console.log(dot);
-          console.log(newConnection);
-          this.setState({
-            connection: newConnection,
-            origin: {x: rowId, y: colId}
-          });
+          this.handleConnection(e, rowId, colId, dot);
         }
       }
     };
   }
 
+  handleConnection(e, rowId, colId, dot) {
+    const newConnection = this.state.connection.concat(dot.id);
+    console.log(newConnection);
+    this.setState({
+      connection: newConnection,
+      origin: {x: rowId, y: colId}
+    });
+  }
+
   onMouseUp(e) {
     e.preventDefault();
     if (this.state.connecting) {
+      let newDotArray = this.eliminate(this.state.dotArray, this.state.connection);
       this.setState({
         connecting: false,
         connection: [],
         originColor: 0,
-        origin: null
+        origin: null,
+        dotArray: newDotArray,
       });
     }
+  }
+
+  eliminate(dotArray, connection) {
+    if (connection.length === 5 && connection[0] === connection[4]) {
+      //connected a square
+
+    } else {
+      connection.forEach((dotId) => {
+        dotArray.forEach((col) => {
+          const rowId = col.findIndex((dot) => {
+            return (dot.id === dotId);
+          });
+          if (rowId >= 0) {
+            col.splice(rowId, 1);
+          }
+        });
+      });
+      console.log(dotArray);
+    }
+    return dotArray;
   }
 
   validConnect(cur, next) {

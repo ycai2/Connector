@@ -21535,10 +21535,10 @@
 	    };
 	    _this.populateBoard = _this.populateBoard.bind(_this);
 	    _this.onMouseDown = _this.onMouseDown.bind(_this);
-	    _this.onMouseMove = _this.onMouseMove.bind(_this);
 	    _this.onMouseUp = _this.onMouseUp.bind(_this);
 	    _this.onMouseOver = _this.onMouseOver.bind(_this);
 	    _this.validConnect = _this.validConnect.bind(_this);
+	    _this.handleConnection = _this.handleConnection.bind(_this);
 	    return _this;
 	  }
 	
@@ -21551,6 +21551,8 @@
 	        for (var j = 0; j < this.props.height; j++) {
 	          dotCol.push({
 	            id: j + i * this.props.height,
+	            colId: i,
+	            rowId: j,
 	            color: Math.floor(Math.random() * 4 + 1)
 	          });
 	        }
@@ -21578,11 +21580,6 @@
 	      };
 	    }
 	  }, {
-	    key: 'onMouseMove',
-	    value: function onMouseMove(e) {
-	      e.preventDefault();
-	    }
-	  }, {
 	    key: 'onMouseOver',
 	    value: function onMouseOver(rowId, colId, dot) {
 	      var _this3 = this;
@@ -21592,29 +21589,56 @@
 	        e.preventDefault();
 	        if (_this3.state.connecting && color === _this3.state.originColor) {
 	          if (_this3.validConnect(_this3.state.origin, { x: rowId, y: colId })) {
-	            var newConnection = _this3.state.connection.concat(dot.id);
-	            console.log(dot);
-	            console.log(newConnection);
-	            _this3.setState({
-	              connection: newConnection,
-	              origin: { x: rowId, y: colId }
-	            });
+	            _this3.handleConnection(e, rowId, colId, dot);
 	          }
 	        }
 	      };
+	    }
+	  }, {
+	    key: 'handleConnection',
+	    value: function handleConnection(e, rowId, colId, dot) {
+	      var newConnection = this.state.connection.concat(dot.id);
+	      console.log(newConnection);
+	      this.setState({
+	        connection: newConnection,
+	        origin: { x: rowId, y: colId }
+	      });
 	    }
 	  }, {
 	    key: 'onMouseUp',
 	    value: function onMouseUp(e) {
 	      e.preventDefault();
 	      if (this.state.connecting) {
+	        var newDotArray = this.eliminate(this.state.dotArray, this.state.connection);
 	        this.setState({
 	          connecting: false,
 	          connection: [],
 	          originColor: 0,
-	          origin: null
+	          origin: null,
+	          dotArray: newDotArray
 	        });
 	      }
+	    }
+	  }, {
+	    key: 'eliminate',
+	    value: function eliminate(dotArray, connection) {
+	      if (connection.length === 5 && connection[0] === connection[4]) {
+	        //connected a square
+	
+	      } else {
+	        connection.forEach(function (dotId) {
+	          dotArray.forEach(function (col) {
+	            var rowId = col.findIndex(function (dot) {
+	              return dot.id === dotId;
+	            });
+	            if (rowId >= 0) {
+	              col.splice(rowId, 1);
+	            }
+	          });
+	        });
+	        console.log(dotArray);
+	      }
+	      return dotArray;
 	    }
 	  }, {
 	    key: 'validConnect',
