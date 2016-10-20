@@ -9,12 +9,14 @@ class Board extends React.Component {
       dotArray: this.populateBoard(),
       connecting: false,
       originColor: 0,
+      origin: null
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseOver = this.onMouseOver.bind(this);
+    this.validConnect = this.validConnect.bind(this);
   }
 
   populateBoard() {
@@ -29,13 +31,14 @@ class Board extends React.Component {
     return dotArray;
   }
 
-  onMouseDown(originColor) {
+  onMouseDown(rowId, colId, originColor) {
     return (e) => {
       e.preventDefault();
       if (!this.state.connecting) {
         this.setState({
           connecting: true,
-          originColor
+          originColor,
+          origin: {x: rowId, y: colId}
         });
       }
     }
@@ -49,7 +52,9 @@ class Board extends React.Component {
     return (e) => {
       e.preventDefault();
       if (this.state.connecting && color === this.state.originColor) {
-        console.log(color);
+        if (this.validConnect(this.state.origin, {x: rowId, y: colId})) {
+          console.log(color);
+        }
       }
     };
   }
@@ -58,9 +63,24 @@ class Board extends React.Component {
     e.preventDefault();
     if (this.state.connecting) {
       this.setState({
-        connecting: false
+        connecting: false,
+        originColor: 0,
+        origin: null
       });
     }
+  }
+
+  validConnect(cur, next) {
+    if (cur.x === next.x) {
+      if (cur.y - next.y === 1 || cur.y - next.y === -1) {
+        return true;
+      }
+    } else if (cur.y === next.y) {
+      if (cur.x - next.x === 1 || cur.x - next.x === -1) {
+        return true;
+      }
+    }
+    return false;
   }
 
   render() {
@@ -82,7 +102,7 @@ class Board extends React.Component {
                         key={rowId}
                         row_id={rowId}
                         col_id={colId}
-                        onMouseDown={this.onMouseDown(dot)}
+                        onMouseDown={this.onMouseDown(rowId, colId, dot)}
                         onMouseOver={this.onMouseOver(rowId, colId, dot)}
                       />
                     );

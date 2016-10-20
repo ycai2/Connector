@@ -21529,13 +21529,15 @@
 	    _this.state = {
 	      dotArray: _this.populateBoard(),
 	      connecting: false,
-	      originColor: 0
+	      originColor: 0,
+	      origin: null
 	    };
 	    _this.populateBoard = _this.populateBoard.bind(_this);
 	    _this.onMouseDown = _this.onMouseDown.bind(_this);
 	    _this.onMouseMove = _this.onMouseMove.bind(_this);
 	    _this.onMouseUp = _this.onMouseUp.bind(_this);
 	    _this.onMouseOver = _this.onMouseOver.bind(_this);
+	    _this.validConnect = _this.validConnect.bind(_this);
 	    return _this;
 	  }
 	
@@ -21554,7 +21556,7 @@
 	    }
 	  }, {
 	    key: 'onMouseDown',
-	    value: function onMouseDown(originColor) {
+	    value: function onMouseDown(rowId, colId, originColor) {
 	      var _this2 = this;
 	
 	      return function (e) {
@@ -21562,7 +21564,8 @@
 	        if (!_this2.state.connecting) {
 	          _this2.setState({
 	            connecting: true,
-	            originColor: originColor
+	            originColor: originColor,
+	            origin: { x: rowId, y: colId }
 	          });
 	        }
 	      };
@@ -21580,7 +21583,9 @@
 	      return function (e) {
 	        e.preventDefault();
 	        if (_this3.state.connecting && color === _this3.state.originColor) {
-	          console.log(color);
+	          if (_this3.validConnect(_this3.state.origin, { x: rowId, y: colId })) {
+	            console.log(color);
+	          }
 	        }
 	      };
 	    }
@@ -21590,9 +21595,25 @@
 	      e.preventDefault();
 	      if (this.state.connecting) {
 	        this.setState({
-	          connecting: false
+	          connecting: false,
+	          originColor: 0,
+	          origin: null
 	        });
 	      }
+	    }
+	  }, {
+	    key: 'validConnect',
+	    value: function validConnect(cur, next) {
+	      if (cur.x === next.x) {
+	        if (cur.y - next.y === 1 || cur.y - next.y === -1) {
+	          return true;
+	        }
+	      } else if (cur.y === next.y) {
+	        if (cur.x - next.x === 1 || cur.x - next.x === -1) {
+	          return true;
+	        }
+	      }
+	      return false;
 	    }
 	  }, {
 	    key: 'render',
@@ -21622,7 +21643,7 @@
 	                    key: rowId,
 	                    row_id: rowId,
 	                    col_id: colId,
-	                    onMouseDown: _this4.onMouseDown(dot),
+	                    onMouseDown: _this4.onMouseDown(rowId, colId, dot),
 	                    onMouseOver: _this4.onMouseOver(rowId, colId, dot)
 	                  });
 	                })
