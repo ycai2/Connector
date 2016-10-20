@@ -21528,12 +21528,14 @@
 	
 	    _this.state = {
 	      dotArray: _this.populateBoard(),
-	      connecting: false
+	      connecting: false,
+	      originColor: 0
 	    };
 	    _this.populateBoard = _this.populateBoard.bind(_this);
 	    _this.onMouseDown = _this.onMouseDown.bind(_this);
 	    _this.onMouseMove = _this.onMouseMove.bind(_this);
 	    _this.onMouseUp = _this.onMouseUp.bind(_this);
+	    _this.onMouseOver = _this.onMouseOver.bind(_this);
 	    return _this;
 	  }
 	
@@ -21552,18 +21554,35 @@
 	    }
 	  }, {
 	    key: 'onMouseDown',
-	    value: function onMouseDown(e) {
-	      e.preventDefault();
-	      if (!this.state.connecting) {
-	        this.setState({
-	          connecting: true
-	        });
-	      }
+	    value: function onMouseDown(originColor) {
+	      var _this2 = this;
+	
+	      return function (e) {
+	        e.preventDefault();
+	        if (!_this2.state.connecting) {
+	          _this2.setState({
+	            connecting: true,
+	            originColor: originColor
+	          });
+	        }
+	      };
 	    }
 	  }, {
 	    key: 'onMouseMove',
 	    value: function onMouseMove(e) {
 	      e.preventDefault();
+	    }
+	  }, {
+	    key: 'onMouseOver',
+	    value: function onMouseOver(rowId, colId, color) {
+	      var _this3 = this;
+	
+	      return function (e) {
+	        e.preventDefault();
+	        if (_this3.state.connecting && color === _this3.state.originColor) {
+	          console.log(color);
+	        }
+	      };
 	    }
 	  }, {
 	    key: 'onMouseUp',
@@ -21578,7 +21597,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this4 = this;
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -21590,18 +21609,21 @@
 	            onMouseMove: this.onMouseMove,
 	            onMouseUp: this.onMouseUp
 	          },
-	          this.state.dotArray.map(function (col, col_num) {
+	          this.state.dotArray.map(function (col, colId) {
 	            return _react2.default.createElement(
 	              'li',
-	              { key: col_num },
+	              { key: colId },
 	              _react2.default.createElement(
 	                'ul',
 	                { className: 'column' },
-	                col.map(function (dot, dotId) {
+	                col.map(function (dot, rowId) {
 	                  return _react2.default.createElement(_dot2.default, {
 	                    color: dot,
-	                    key: dotId,
-	                    onMouseDown: _this2.onMouseDown
+	                    key: rowId,
+	                    row_id: rowId,
+	                    col_id: colId,
+	                    onMouseDown: _this4.onMouseDown(dot),
+	                    onMouseOver: _this4.onMouseOver(rowId, colId, dot)
 	                  });
 	                })
 	              )
@@ -21658,7 +21680,8 @@
 	      var dotColor = this.props.color;
 	      return _react2.default.createElement('li', {
 	        className: 'dot hvr-ripple-out color-' + dotColor,
-	        onMouseDown: this.props.onMouseDown
+	        onMouseDown: this.props.onMouseDown,
+	        onMouseOver: this.props.onMouseOver
 	      });
 	    }
 	  }]);

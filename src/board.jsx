@@ -7,12 +7,14 @@ class Board extends React.Component {
     super(props);
     this.state = {
       dotArray: this.populateBoard(),
-      connecting: false
+      connecting: false,
+      originColor: 0,
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.onMouseOver = this.onMouseOver.bind(this);
   }
 
   populateBoard() {
@@ -27,18 +29,29 @@ class Board extends React.Component {
     return dotArray;
   }
 
-  onMouseDown(e) {
-    e.preventDefault();
-    if (!this.state.connecting) {
-      this.setState({
-        connecting: true
-      });
-      
+  onMouseDown(originColor) {
+    return (e) => {
+      e.preventDefault();
+      if (!this.state.connecting) {
+        this.setState({
+          connecting: true,
+          originColor
+        });
+      }
     }
   }
 
   onMouseMove(e) {
     e.preventDefault();
+  }
+
+  onMouseOver(rowId, colId, color) {
+    return (e) => {
+      e.preventDefault();
+      if (this.state.connecting && color === this.state.originColor) {
+        console.log(color);
+      }
+    };
   }
 
   onMouseUp(e) {
@@ -58,16 +71,19 @@ class Board extends React.Component {
         onMouseMove={this.onMouseMove}
         onMouseUp={this.onMouseUp}
         >
-          {this.state.dotArray.map((col, col_num) => {
+          {this.state.dotArray.map((col, colId) => {
             return (
-              <li key={col_num}>
+              <li key={colId}>
                 <ul className="column">
-                  {col.map((dot, dotId) => {
+                  {col.map((dot, rowId) => {
                     return (
                       <Dot
                         color={dot}
-                        key={dotId}
-                        onMouseDown={this.onMouseDown}
+                        key={rowId}
+                        row_id={rowId}
+                        col_id={colId}
+                        onMouseDown={this.onMouseDown(dot)}
+                        onMouseOver={this.onMouseOver(rowId, colId, dot)}
                       />
                     );
                   })}

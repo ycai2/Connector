@@ -11,6 +11,7 @@ class Dot extends React.Component {
       <li
         className={`dot hvr-ripple-out color-${dotColor}`}
         onMouseDown={this.props.onMouseDown}
+        onMouseOver={this.props.onMouseOver}
       >
       </li>
     );
