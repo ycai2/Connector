@@ -1,6 +1,5 @@
 import React from 'react';
 import { Dot, DotObject } from './dot';
-import Line from './line';
 
 class Board extends React.Component {
   constructor(props) {

@@ -4,5 +4,5 @@ import Game from './game';
 
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.getElementById('root');
-    ReactDOM.render(<Game />, root);
+    ReactDOM.render(<Game maxSteps={10} />, root);
 });
