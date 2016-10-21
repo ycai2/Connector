@@ -21609,7 +21609,10 @@
 	    value: function onMouseUp(e) {
 	      e.preventDefault();
 	      if (this.state.connecting) {
-	        var newDotArray = this.eliminate(this.state.dotArray, this.state.connection);
+	        var newDotArray = this.state.dotArray;
+	        if (this.state.connection.length > 1) {
+	          newDotArray = this.eliminate(this.state.dotArray, this.state.connection);
+	        }
 	        this.setState({
 	          connecting: false,
 	          connection: [],

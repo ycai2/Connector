@@ -77,7 +77,10 @@ class Board extends React.Component {
   onMouseUp(e) {
     e.preventDefault();
     if (this.state.connecting) {
-      let newDotArray = this.eliminate(this.state.dotArray, this.state.connection);
+      let newDotArray = this.state.dotArray;
+      if (this.state.connection.length > 1) {
+        newDotArray = this.eliminate(this.state.dotArray, this.state.connection);
+      }
       this.setState({
         connecting: false,
         connection: [],
