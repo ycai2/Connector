@@ -1,15 +1,17 @@
 import React from 'react';
 
-class Dot extends React.Component {
+export class Dot extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
     const dotColor = this.props.color;
+    const connected = this.props.connected;
+    const active = connected ? 'active' : '';
     return (
       <li
-        className={`dot hvr-ripple-out color-${dotColor}`}
+        className={`dot hvr-ripple-out color-${dotColor} ${active}`}
         onMouseDown={this.props.onMouseDown}
         onMouseOver={this.props.onMouseOver}
       >
@@ -18,4 +20,11 @@ class Dot extends React.Component {
   }
 }
 
-export default Dot;
+export class DotObject {
+  constructor(id, colId, rowId, color) {
+    this.id = id;
+    this.colId = colId;
+    this.rowId = rowId;
+    this.color = color;
+  }
+}

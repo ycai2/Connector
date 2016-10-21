@@ -21504,8 +21504,6 @@
 	
 	var _dot = __webpack_require__(174);
 	
-	var _dot2 = _interopRequireDefault(_dot);
-	
 	var _line = __webpack_require__(176);
 	
 	var _line2 = _interopRequireDefault(_line);
@@ -21531,7 +21529,8 @@
 	      connecting: false,
 	      connection: [],
 	      originColor: 0,
-	      origin: null
+	      origin: null,
+	      maxDotId: props.width * props.height - 1
 	    };
 	    _this.populateBoard = _this.populateBoard.bind(_this);
 	    _this.onMouseDown = _this.onMouseDown.bind(_this);
@@ -21549,12 +21548,7 @@
 	      for (var i = 0; i < this.props.width; i++) {
 	        var dotCol = [];
 	        for (var j = 0; j < this.props.height; j++) {
-	          dotCol.push({
-	            id: j + i * this.props.height,
-	            colId: i,
-	            rowId: j,
-	            color: Math.floor(Math.random() * 4 + 1)
-	          });
+	          dotCol.push(new _dot.DotObject(j + i * this.props.height, i, j, Math.floor(Math.random() * 4 + 1)));
 	        }
 	        dotArray.push(dotCol);
 	      }
@@ -21568,6 +21562,7 @@
 	      var originColor = dot.color;
 	      return function (e) {
 	        e.preventDefault();
+	        console.log(dot.id);
 	        var newConnection = _this2.state.connection.concat(dot.id);
 	        if (!_this2.state.connecting) {
 	          _this2.setState({
@@ -21625,21 +21620,23 @@
 	  }, {
 	    key: 'eliminate',
 	    value: function eliminate(dotArray, connection) {
+	      var _this4 = this;
+	
 	      if (connection.length === 5 && connection[0] === connection[4]) {
 	        //connected a square
 	
 	      } else {
 	        connection.forEach(function (dotId) {
-	          dotArray.forEach(function (col) {
+	          dotArray.forEach(function (col, colId) {
 	            var rowId = col.findIndex(function (dot) {
 	              return dot.id === dotId;
 	            });
 	            if (rowId >= 0) {
 	              col.splice(rowId, 1);
+	              col.unshift(new _dot.DotObject(_this4.state.maxDotId + 1, colId, rowId, Math.floor(Math.random() * 4 + 1)));
 	            }
 	          });
 	        });
-	        console.log(dotArray);
 	      }
 	      return dotArray;
 	    }
@@ -21660,7 +21657,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this4 = this;
+	      var _this5 = this;
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -21680,14 +21677,14 @@
 	                'ul',
 	                { className: 'column' },
 	                col.map(function (dot, rowId) {
-	                  return _react2.default.createElement(_dot2.default, {
+	                  var connected = _this5.state.connection.includes(dot.id);
+	                  return _react2.default.createElement(_dot.Dot, {
 	                    key: rowId,
+	                    connected: connected,
 	                    color: dot.color,
 	                    dotId: dot.id,
-	                    row_id: rowId,
-	                    col_id: colId,
-	                    onMouseDown: _this4.onMouseDown(rowId, colId, dot),
-	                    onMouseOver: _this4.onMouseOver(rowId, colId, dot)
+	                    onMouseDown: _this5.onMouseDown(rowId, colId, dot),
+	                    onMouseOver: _this5.onMouseOver(rowId, colId, dot)
 	                  });
 	                })
 	              )
@@ -21714,6 +21711,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.DotObject = exports.Dot = undefined;
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
@@ -21729,7 +21727,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Dot = function (_React$Component) {
+	var Dot = exports.Dot = function (_React$Component) {
 	  _inherits(Dot, _React$Component);
 	
 	  function Dot(props) {
@@ -21742,8 +21740,10 @@
 	    key: 'render',
 	    value: function render() {
 	      var dotColor = this.props.color;
+	      var connected = this.props.connected;
+	      var active = connected ? 'active' : '';
 	      return _react2.default.createElement('li', {
-	        className: 'dot hvr-ripple-out color-' + dotColor,
+	        className: 'dot hvr-ripple-out color-' + dotColor + ' ' + active,
 	        onMouseDown: this.props.onMouseDown,
 	        onMouseOver: this.props.onMouseOver
 	      });
@@ -21753,7 +21753,14 @@
 	  return Dot;
 	}(_react2.default.Component);
 	
-	exports.default = Dot;
+	var DotObject = exports.DotObject = function DotObject(id, colId, rowId, color) {
+	  _classCallCheck(this, DotObject);
+	
+	  this.id = id;
+	  this.colId = colId;
+	  this.rowId = rowId;
+	  this.color = color;
+	};
 
 /***/ },
 /* 175 */,

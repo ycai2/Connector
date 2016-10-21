@@ -1,5 +1,5 @@
 import React from 'react';
-import Dot from './dot';
+import { Dot, DotObject } from './dot';
 import Line from './line';
 
 class Board extends React.Component {
@@ -10,7 +10,8 @@ class Board extends React.Component {
       connecting: false,
       connection: [],
       originColor: 0,
-      origin: null
+      origin: null,
+      maxDotId: props.width * props.height - 1,
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -25,12 +26,12 @@ class Board extends React.Component {
     for (let i = 0; i < this.props.width; i++) {
       let dotCol = [];
       for (let j = 0; j < this.props.height; j++) {
-        dotCol.push({
-          id: j + i * this.props.height,
-          colId: i,
-          rowId: j,
-          color: Math.floor(Math.random() * 4 + 1)
-        });
+        dotCol.push(new DotObject(
+          j + i * this.props.height,
+          i,
+          j,
+          Math.floor(Math.random() * 4 + 1)
+        ));
       }
       dotArray.push(dotCol);
     }
@@ -41,6 +42,7 @@ class Board extends React.Component {
     const originColor = dot.color;
     return (e) => {
       e.preventDefault();
+      console.log(dot.id);
       const newConnection = this.state.connection.concat(dot.id);
       if (!this.state.connecting) {
         this.setState({
@@ -97,16 +99,21 @@ class Board extends React.Component {
 
     } else {
       connection.forEach((dotId) => {
-        dotArray.forEach((col) => {
+        dotArray.forEach((col, colId) => {
           const rowId = col.findIndex((dot) => {
             return (dot.id === dotId);
           });
           if (rowId >= 0) {
             col.splice(rowId, 1);
+            col.unshift(new DotObject(
+              this.state.maxDotId + 1,
+              colId,
+              rowId,
+              Math.floor(Math.random() * 4 + 1)
+            ));
           }
         });
       });
-      console.log(dotArray);
     }
     return dotArray;
   }
@@ -137,13 +144,13 @@ class Board extends React.Component {
               <li key={colId}>
                 <ul className="column">
                   {col.map((dot, rowId) => {
+                    const connected = this.state.connection.includes(dot.id);
                     return (
                       <Dot
                         key={rowId}
+                        connected={connected}
                         color={dot.color}
                         dotId={dot.id}
-                        row_id={rowId}
-                        col_id={colId}
                         onMouseDown={this.onMouseDown(rowId, colId, dot)}
                         onMouseOver={this.onMouseOver(rowId, colId, dot)}
                       />
