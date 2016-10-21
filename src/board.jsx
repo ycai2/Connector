@@ -124,6 +124,12 @@ class Board extends React.Component {
   }
 
   validConnect(cur, next) {
+    const conn = this.state.connection;
+    if (conn.length > 1) {
+      if (next.x === conn[conn.length - 2].rowId && next.y === conn[conn.length - 2].colId) {
+        return false;
+      }
+    }
     if (cur.x === next.x) {
       if (cur.y - next.y === 1 || cur.y - next.y === -1) {
         return true;
