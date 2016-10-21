@@ -10,8 +10,8 @@
   display: none;
 }
 
-.dot div.active {
-  display: block;
+.dot div {
+  display: none;
   content: '';
   position: absolute;
   border: #e1e1e1 solid 4px;
@@ -24,6 +24,14 @@
   transition-duration: 0.3s;
   -webkit-transition-property: top, right, bottom, left;
   transition-property: top, right, bottom, left;
+}
+
+.dot div.active {
+  display: block;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
 }
 
 .column {

@@ -21567,7 +21567,7 @@
 	      return function (e) {
 	        e.preventDefault();
 	        console.log(dot.id);
-	        var newConnection = _this2.state.connection.concat(dot.id);
+	        var newConnection = _this2.state.connection.concat(dot);
 	        if (!_this2.state.connecting) {
 	          _this2.setState({
 	            connecting: true,
@@ -21596,7 +21596,7 @@
 	  }, {
 	    key: 'handleConnection',
 	    value: function handleConnection(e, rowId, colId, dot) {
-	      var newConnection = this.state.connection.concat(dot.id);
+	      var newConnection = this.state.connection.concat(dot);
 	      console.log(newConnection);
 	      this.setState({
 	        connection: newConnection,
@@ -21626,14 +21626,14 @@
 	    value: function eliminate(dotArray, connection) {
 	      var maxDotId = this.state.maxDotId;
 	
-	      if (connection.length === 5 && connection[0] === connection[4]) {
+	      if (connection.length === 5 && connection[0].id === connection[4].id) {
 	        //connected a square
 	
 	      } else {
-	        connection.forEach(function (dotId) {
+	        connection.forEach(function (connectDot) {
 	          dotArray.forEach(function (col, colId) {
 	            var rowId = col.findIndex(function (dot) {
-	              return dot.id === dotId;
+	              return dot.id === connectDot.id;
 	            });
 	            if (rowId >= 0) {
 	              col.splice(rowId, 1);
@@ -21684,7 +21684,7 @@
 	                'ul',
 	                { className: 'column' },
 	                col.map(function (dot, rowId) {
-	                  var connected = _this4.state.connection.includes(dot.id);
+	                  var connected = _this4.state.connection.includes(dot);
 	                  return _react2.default.createElement(_dot.Dot, {
 	                    key: rowId,
 	                    connected: connected,

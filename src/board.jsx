@@ -43,7 +43,7 @@ class Board extends React.Component {
     return (e) => {
       e.preventDefault();
       console.log(dot.id);
-      const newConnection = this.state.connection.concat(dot.id);
+      const newConnection = this.state.connection.concat(dot);
       if (!this.state.connecting) {
         this.setState({
           connecting: true,
@@ -68,7 +68,7 @@ class Board extends React.Component {
   }
 
   handleConnection(e, rowId, colId, dot) {
-    const newConnection = this.state.connection.concat(dot.id);
+    const newConnection = this.state.connection.concat(dot);
     console.log(newConnection);
     this.setState({
       connection: newConnection,
@@ -96,14 +96,14 @@ class Board extends React.Component {
   eliminate(dotArray, connection) {
     let maxDotId = this.state.maxDotId;
 
-    if (connection.length === 5 && connection[0] === connection[4]) {
+    if (connection.length === 5 && connection[0].id === connection[4].id) {
       //connected a square
 
     } else {
-      connection.forEach((dotId) => {
+      connection.forEach((connectDot) => {
         dotArray.forEach((col, colId) => {
           const rowId = col.findIndex((dot) => {
-            return (dot.id === dotId);
+            return (dot.id === connectDot.id);
           });
           if (rowId >= 0) {
             col.splice(rowId, 1);
@@ -149,7 +149,7 @@ class Board extends React.Component {
               <li key={colId}>
                 <ul className="column">
                   {col.map((dot, rowId) => {
-                    const connected = this.state.connection.includes(dot.id);
+                    const connected = this.state.connection.includes(dot);
                     return (
                       <Dot
                         key={rowId}
