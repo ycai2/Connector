@@ -96,6 +96,7 @@ class Board extends React.Component {
 
   eliminate(dotArray, connection) {
     let maxDotId = this.state.maxDotId;
+
     if (connection.length === 5 && connection[0] === connection[4]) {
       //connected a square
 

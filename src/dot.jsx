@@ -11,10 +11,11 @@ export class Dot extends React.Component {
     const active = connected ? 'active' : '';
     return (
       <li
-        className={`dot hvr-ripple-out color-${dotColor} ${active}`}
+        className={`dot hvr-ripple-out color-${dotColor}`}
         onMouseDown={this.props.onMouseDown}
         onMouseOver={this.props.onMouseOver}
       >
+        <div className={`${active}`}></div>
       </li>
     );
   }

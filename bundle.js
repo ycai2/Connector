@@ -21622,6 +21622,7 @@
 	    key: 'eliminate',
 	    value: function eliminate(dotArray, connection) {
 	      var maxDotId = this.state.maxDotId;
+	
 	      if (connection.length === 5 && connection[0] === connection[4]) {
 	        //connected a square
 	
@@ -21745,11 +21746,15 @@
 	      var dotColor = this.props.color;
 	      var connected = this.props.connected;
 	      var active = connected ? 'active' : '';
-	      return _react2.default.createElement('li', {
-	        className: 'dot hvr-ripple-out color-' + dotColor + ' ' + active,
-	        onMouseDown: this.props.onMouseDown,
-	        onMouseOver: this.props.onMouseOver
-	      });
+	      return _react2.default.createElement(
+	        'li',
+	        {
+	          className: 'dot hvr-ripple-out color-' + dotColor,
+	          onMouseDown: this.props.onMouseDown,
+	          onMouseOver: this.props.onMouseOver
+	        },
+	        _react2.default.createElement('div', { className: '' + active })
+	      );
 	    }
 	  }]);
 	
