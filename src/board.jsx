@@ -19,6 +19,7 @@ class Board extends React.Component {
     this.onMouseOver = this.onMouseOver.bind(this);
     this.validConnect = this.validConnect.bind(this);
     this.handleConnection = this.handleConnection.bind(this);
+    this.eliminate = this.eliminate.bind(this);
   }
 
   populateBoard() {
@@ -94,6 +95,7 @@ class Board extends React.Component {
   }
 
   eliminate(dotArray, connection) {
+    let maxDotId = this.state.maxDotId;
     if (connection.length === 5 && connection[0] === connection[4]) {
       //connected a square
 
@@ -106,7 +108,7 @@ class Board extends React.Component {
           if (rowId >= 0) {
             col.splice(rowId, 1);
             col.unshift(new DotObject(
-              this.state.maxDotId + 1,
+              ++maxDotId,
               colId,
               rowId,
               Math.floor(Math.random() * 4 + 1)
@@ -115,6 +117,9 @@ class Board extends React.Component {
         });
       });
     }
+    this.setState({
+      maxDotId,
+    });
     return dotArray;
   }
 

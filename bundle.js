@@ -21538,6 +21538,7 @@
 	    _this.onMouseOver = _this.onMouseOver.bind(_this);
 	    _this.validConnect = _this.validConnect.bind(_this);
 	    _this.handleConnection = _this.handleConnection.bind(_this);
+	    _this.eliminate = _this.eliminate.bind(_this);
 	    return _this;
 	  }
 	
@@ -21620,8 +21621,7 @@
 	  }, {
 	    key: 'eliminate',
 	    value: function eliminate(dotArray, connection) {
-	      var _this4 = this;
-	
+	      var maxDotId = this.state.maxDotId;
 	      if (connection.length === 5 && connection[0] === connection[4]) {
 	        //connected a square
 	
@@ -21633,11 +21633,14 @@
 	            });
 	            if (rowId >= 0) {
 	              col.splice(rowId, 1);
-	              col.unshift(new _dot.DotObject(_this4.state.maxDotId + 1, colId, rowId, Math.floor(Math.random() * 4 + 1)));
+	              col.unshift(new _dot.DotObject(++maxDotId, colId, rowId, Math.floor(Math.random() * 4 + 1)));
 	            }
 	          });
 	        });
 	      }
+	      this.setState({
+	        maxDotId: maxDotId
+	      });
 	      return dotArray;
 	    }
 	  }, {
@@ -21657,7 +21660,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this5 = this;
+	      var _this4 = this;
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -21677,14 +21680,14 @@
 	                'ul',
 	                { className: 'column' },
 	                col.map(function (dot, rowId) {
-	                  var connected = _this5.state.connection.includes(dot.id);
+	                  var connected = _this4.state.connection.includes(dot.id);
 	                  return _react2.default.createElement(_dot.Dot, {
 	                    key: rowId,
 	                    connected: connected,
 	                    color: dot.color,
 	                    dotId: dot.id,
-	                    onMouseDown: _this5.onMouseDown(rowId, colId, dot),
-	                    onMouseOver: _this5.onMouseOver(rowId, colId, dot)
+	                    onMouseDown: _this4.onMouseDown(rowId, colId, dot),
+	                    onMouseOver: _this4.onMouseOver(rowId, colId, dot)
 	                  });
 	                })
 	              )
