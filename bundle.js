@@ -21597,7 +21597,10 @@
 	    key: 'handleConnection',
 	    value: function handleConnection(e, rowId, colId, dot) {
 	      var newConnection = this.state.connection.concat(dot);
-	      console.log(newConnection);
+	      if (newConnection[newConnection.length - 1] === newConnection[newConnection.length - 3]) {
+	        newConnection.splice(-2);
+	      }
+	
 	      this.setState({
 	        connection: newConnection,
 	        origin: { x: rowId, y: colId }
@@ -21650,12 +21653,18 @@
 	  }, {
 	    key: 'validConnect',
 	    value: function validConnect(cur, next) {
-	      var conn = this.state.connection;
-	      if (conn.length > 1) {
-	        if (next.x === conn[conn.length - 2].rowId && next.y === conn[conn.length - 2].colId) {
+	      var inConn = this.state.connection.findIndex(function (dot) {
+	        return dot.rowId === next.x && dot.colId === next.y;
+	      });
+	
+	      if (inConn >= 0) {
+	        if (this.state.connection.length - 2 === inConn) {
+	          return true;
+	        } else if (this.state.connection.length !== 4) {
 	          return false;
 	        }
 	      }
+	
 	      if (cur.x === next.x) {
 	        if (cur.y - next.y === 1 || cur.y - next.y === -1) {
 	          return true;
