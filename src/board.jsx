@@ -19,6 +19,7 @@ class Board extends React.Component {
     this.validConnect = this.validConnect.bind(this);
     this.handleConnection = this.handleConnection.bind(this);
     this.eliminate = this.eliminate.bind(this);
+    this.eliminateAll = this.eliminateAll.bind(this);
   }
 
   populateBoard() {
@@ -113,7 +114,7 @@ class Board extends React.Component {
 
     if (connection.length === 5 && connection[0].id === connection[4].id) {
       //connected a square
-
+      this.eliminateAll(connection[0].color);
     } else {
       connection.forEach((connectDot) => {
         dotArray.forEach((col, colId) => {
@@ -138,6 +139,18 @@ class Board extends React.Component {
     });
     return dotArray;
   }
+
+  eliminateAll(color) {
+    let newDotArray = this.state.dotArray;
+    this.state.dotArray.forEach((col) => {
+      col.forEach((dot) => {
+        if (dot.color === color) {
+          this.eliminate(newDotArray, [dot]);
+        }
+      });
+    });
+  }
+
 
   validConnect(cur, next) {
     const inConn = this.state.connection.findIndex((dot) => {
