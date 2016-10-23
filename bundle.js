@@ -54,15 +54,15 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _game = __webpack_require__(172);
+	var _app = __webpack_require__(177);
 	
-	var _game2 = _interopRequireDefault(_game);
+	var _app2 = _interopRequireDefault(_app);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	document.addEventListener('DOMContentLoaded', function () {
 	    var root = document.getElementById('root');
-	    _reactDom2.default.render(_react2.default.createElement(_game2.default, { maxSteps: 10 }), root);
+	    _reactDom2.default.render(_react2.default.createElement(_app2.default, null), root);
 	});
 
 /***/ },
@@ -21452,6 +21452,8 @@
 	
 	var _board2 = _interopRequireDefault(_board);
 	
+	var _levels = __webpack_require__(179);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21468,21 +21470,43 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 	
-	    _this.width = 6;
-	    _this.height = 6;
+	    _this.level = _levels.LEVELS[_this.props.level];
+	    _this.width = _this.level.width;
+	    _this.height = _this.level.height;
 	    _this.state = {
-	      stepLeft: _this.props.maxSteps
+	      stepLeft: _this.level.maxSteps,
+	      requirement: _this.level.requirement
 	    };
+	
+	    _this.reduceStep = _this.reduceStep.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(Game, [{
+	    key: 'reduceStep',
+	    value: function reduceStep() {
+	      this.setState({
+	        stepLeft: this.state.stepLeft - 1
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(_board2.default, {
-	        width: this.width,
-	        height: this.height
-	      });
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          'Steps Left: ',
+	          this.state.stepLeft
+	        ),
+	        _react2.default.createElement(_board2.default, {
+	          width: this.width,
+	          height: this.height,
+	          move: this.reduceStep
+	        })
+	      );
 	    }
 	  }]);
 	
@@ -21567,6 +21591,7 @@
 	      return function (e) {
 	        e.preventDefault();
 	        console.log(dot.id);
+	        console.log(dot.rowId, dot.colId);
 	        var newConnection = _this2.state.connection.concat(dot);
 	        if (!_this2.state.connecting) {
 	          _this2.setState({
@@ -21586,6 +21611,8 @@
 	      var color = dot.color;
 	      return function (e) {
 	        e.preventDefault();
+	        console.log(dot.id);
+	        console.log(dot.rowId, dot.colId);
 	        if (_this3.state.connecting && color === _this3.state.originColor) {
 	          if (_this3.validConnect(_this3.state.origin, { x: rowId, y: colId })) {
 	            _this3.handleConnection(e, rowId, colId, dot);
@@ -21622,11 +21649,23 @@
 	          origin: null,
 	          dotArray: newDotArray
 	        });
+	        this.props.move();
 	      }
+	    }
+	  }, {
+	    key: 'reindex',
+	    value: function reindex(col, rowId) {
+	      var arr = col;
+	      for (var i = 0; i < rowId; i++) {
+	        arr[i].rowId++;
+	      }
+	      return arr;
 	    }
 	  }, {
 	    key: 'eliminate',
 	    value: function eliminate(dotArray, connection) {
+	      var _this4 = this;
+	
 	      var maxDotId = this.state.maxDotId;
 	
 	      if (connection.length === 5 && connection[0].id === connection[4].id) {
@@ -21640,7 +21679,8 @@
 	            });
 	            if (rowId >= 0) {
 	              col.splice(rowId, 1);
-	              col.unshift(new _dot.DotObject(++maxDotId, colId, rowId, Math.floor(Math.random() * 4 + 1)));
+	              _this4.reindex(col, rowId);
+	              col.unshift(new _dot.DotObject(++maxDotId, colId, 0, Math.floor(Math.random() * 4 + 1)));
 	            }
 	          });
 	        });
@@ -21679,7 +21719,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this4 = this;
+	      var _this5 = this;
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -21699,14 +21739,14 @@
 	                'ul',
 	                { className: 'column' },
 	                col.map(function (dot, rowId) {
-	                  var connected = _this4.state.connection.includes(dot);
+	                  var connected = _this5.state.connection.includes(dot);
 	                  return _react2.default.createElement(_dot.Dot, {
 	                    key: rowId,
 	                    connected: connected,
 	                    color: dot.color,
 	                    dotId: dot.id,
-	                    onMouseDown: _this4.onMouseDown(rowId, colId, dot),
-	                    onMouseOver: _this4.onMouseOver(rowId, colId, dot)
+	                    onMouseDown: _this5.onMouseDown(rowId, colId, dot),
+	                    onMouseOver: _this5.onMouseOver(rowId, colId, dot)
 	                  });
 	                })
 	              )
@@ -21786,6 +21826,79 @@
 	  this.colId = colId;
 	  this.rowId = rowId;
 	  this.color = color;
+	};
+
+/***/ },
+/* 175 */,
+/* 176 */,
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _game = __webpack_require__(172);
+	
+	var _game2 = _interopRequireDefault(_game);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var App = function (_React$Component) {
+	  _inherits(App, _React$Component);
+	
+	  function App() {
+	    _classCallCheck(this, App);
+	
+	    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+	  }
+	
+	  _createClass(App, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(_game2.default, { level: 0 });
+	    }
+	  }]);
+	
+	  return App;
+	}(_react2.default.Component);
+	
+	exports.default = App;
+
+/***/ },
+/* 178 */,
+/* 179 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var LEVELS = exports.LEVELS = {
+	  "0": {
+	    "width": 4,
+	    "height": 4,
+	    "maxSteps": 10,
+	    "requirement": {
+	      "1": 10,
+	      "2": 10
+	    }
+	  }
 	};
 
 /***/ }

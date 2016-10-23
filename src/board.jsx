@@ -43,6 +43,7 @@ class Board extends React.Component {
     return (e) => {
       e.preventDefault();
       console.log(dot.id);
+      console.log(dot.rowId, dot.colId);
       const newConnection = this.state.connection.concat(dot);
       if (!this.state.connecting) {
         this.setState({
@@ -59,6 +60,8 @@ class Board extends React.Component {
     const color = dot.color;
     return (e) => {
       e.preventDefault();
+      console.log(dot.id);
+      console.log(dot.rowId, dot.colId);
       if (this.state.connecting && color === this.state.originColor) {
         if (this.validConnect(this.state.origin, {x: rowId, y: colId})) {
           this.handleConnection(e, rowId, colId, dot);
@@ -72,7 +75,7 @@ class Board extends React.Component {
     if (newConnection[newConnection.length - 1] === newConnection[newConnection.length - 3]) {
       newConnection.splice(-2);
     }
-    
+
     this.setState({
       connection: newConnection,
       origin: {x: rowId, y: colId}
@@ -93,7 +96,16 @@ class Board extends React.Component {
         origin: null,
         dotArray: newDotArray,
       });
+      this.props.move();
     }
+  }
+
+  reindex(col, rowId) {
+    const arr = col;
+    for (let i = 0; i < rowId; i++) {
+      arr[i].rowId++;
+    }
+    return arr;
   }
 
   eliminate(dotArray, connection) {
@@ -110,10 +122,11 @@ class Board extends React.Component {
           });
           if (rowId >= 0) {
             col.splice(rowId, 1);
+            this.reindex(col, rowId);
             col.unshift(new DotObject(
               ++maxDotId,
               colId,
-              rowId,
+              0,
               Math.floor(Math.random() * 4 + 1)
             ));
           }
