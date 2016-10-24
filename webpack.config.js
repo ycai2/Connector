@@ -1,3 +1,6 @@
+const webpack = require("webpack");
+const path = require("path");
+
 module.exports = {
   context: __dirname,
   entry: "./src/connector.jsx",
