@@ -1,11 +1,11 @@
 export const LEVELS = {
   "0": {
-    "width": 4,
-    "height": 4,
+    "width": 6,
+    "height": 6,
     "maxSteps": 10,
     "requirement": {
-      "1": 10,
-      "2": 10,
+      "1": 20,
+      "2": 20,
     }
   }
 };

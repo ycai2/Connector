@@ -21513,7 +21513,9 @@
 	        _react2.default.createElement(
 	          'ul',
 	          { className: 'score-board' },
-	          'Now connect',
+	          'Level ',
+	          this.props.level,
+	          ' connect',
 	          Object.keys(this.state.requirement).map(function (color, idx) {
 	            return _react2.default.createElement(
 	              'li',
@@ -21913,7 +21915,11 @@
 	  _createClass(App, [{
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(_game2.default, { level: 0 });
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(_game2.default, { level: 0 })
+	      );
 	    }
 	  }]);
 	
@@ -21934,12 +21940,12 @@
 	});
 	var LEVELS = exports.LEVELS = {
 	  "0": {
-	    "width": 4,
-	    "height": 4,
+	    "width": 6,
+	    "height": 6,
 	    "maxSteps": 10,
 	    "requirement": {
-	      "1": 10,
-	      "2": 10
+	      "1": 20,
+	      "2": 20
 	    }
 	  }
 	};

@@ -37,7 +37,7 @@ class Game extends React.Component {
     return (
       <div>
         <ul className="score-board">
-          Now connect
+          Level {this.props.level} connect
           {Object.keys(this.state.requirement).map((color, idx) => {
             return (
               <li
