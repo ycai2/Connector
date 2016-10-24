@@ -21515,6 +21515,10 @@
 	
 	var _modalStyle = __webpack_require__(205);
 	
+	var _reactAddonsCssTransitionGroup = __webpack_require__(196);
+	
+	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -23687,6 +23691,10 @@
 	
 	var _dot = __webpack_require__(195);
 	
+	var _reactAddonsCssTransitionGroup = __webpack_require__(196);
+	
+	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -23821,9 +23829,10 @@
 	
 	      var maxDotId = this.state.maxDotId;
 	
-	      if (connection.length === 5 && connection[0].id === connection[4].id) {
+	      if (connection.length >= 5 && connection[0].id === connection[connection.length - 1].id) {
 	        //connected a square
-	        this.eliminateAll(connection[0].color);
+	        //this.eliminateAll(connection[0].color);
+	        console.log("explode!");
 	      } else {
 	        this.props.reduceColor(_defineProperty({}, this.state.originColor, connection.length));
 	        connection.forEach(function (connectDot) {
@@ -23842,6 +23851,7 @@
 	      this.setState({
 	        maxDotId: maxDotId
 	      });
+	
 	      return dotArray;
 	    }
 	  }, {
@@ -23904,12 +23914,20 @@
 	              'li',
 	              { key: colId },
 	              _react2.default.createElement(
-	                'ul',
-	                { className: 'column' },
+	                _reactAddonsCssTransitionGroup2.default,
+	                {
+	                  className: 'column',
+	                  transitionName: 'bounce',
+	                  transitionEnterTimeout: 2000,
+	                  transitionLeaveTimeout: 2000,
+	                  transitionAppear: true,
+	                  transitionAppearTimeout: 2000,
+	                  component: 'ul'
+	                },
 	                col.map(function (dot, rowId) {
 	                  var connected = _this6.state.connection.includes(dot);
 	                  return _react2.default.createElement(_dot.Dot, {
-	                    key: rowId,
+	                    key: dot.id,
 	                    connected: connected,
 	                    color: dot.color,
 	                    dotId: dot.id,
@@ -23948,10 +23966,6 @@
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactAddonsCssTransitionGroup = __webpack_require__(196);
-	
-	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	

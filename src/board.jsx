@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dot, DotObject } from './dot';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Board extends React.Component {
   constructor(props) {
@@ -110,9 +111,10 @@ class Board extends React.Component {
   eliminate(dotArray, connection) {
     let maxDotId = this.state.maxDotId;
 
-    if (connection.length === 5 && connection[0].id === connection[4].id) {
+    if (connection.length >= 5 && connection[0].id === connection[connection.length - 1].id) {
       //connected a square
-      this.eliminateAll(connection[0].color);
+      //this.eliminateAll(connection[0].color);
+      console.log("explode!");
     } else {
       this.props.reduceColor({[this.state.originColor]: connection.length});
       connection.forEach((connectDot) => {
@@ -136,6 +138,7 @@ class Board extends React.Component {
     this.setState({
       maxDotId,
     });
+
     return dotArray;
   }
 
@@ -187,12 +190,20 @@ class Board extends React.Component {
           {this.state.dotArray.map((col, colId) => {
             return (
               <li key={colId}>
-                <ul className="column">
+                <ReactCSSTransitionGroup
+                  className="column"
+                  transitionName="bounce"
+                  transitionEnterTimeout={2000}
+                  transitionLeaveTimeout={2000}
+                  transitionAppear={true}
+                  transitionAppearTimeout={2000}
+                  component="ul"
+                >
                   {col.map((dot, rowId) => {
                     const connected = this.state.connection.includes(dot);
                     return (
                       <Dot
-                        key={rowId}
+                        key={dot.id}
                         connected={connected}
                         color={dot.color}
                         dotId={dot.id}
@@ -201,7 +212,7 @@ class Board extends React.Component {
                       />
                     );
                   })}
-                </ul>
+                </ReactCSSTransitionGroup>
               </li>
             );
           })}

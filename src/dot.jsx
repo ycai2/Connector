@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
 
 export class Dot extends React.Component {
   constructor(props) {

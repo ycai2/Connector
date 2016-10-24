@@ -4,6 +4,7 @@ import Board from './board';
 import { LEVELS, COLORS, INSTRUCTION } from './levels.js';
 import { reduceRequirement } from './util/util.js';
 import { instructionStyle } from './util/modalStyle.js';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Game extends React.Component {
   constructor(props) {
@@ -67,6 +68,7 @@ class Game extends React.Component {
             </ul>
           </div>
         </nav>
+
         <ul className="score-board">
           Level {this.props.level} connect
           {Object.keys(this.state.requirement).map((color, idx) => {
