@@ -1,7 +1,9 @@
 import React from 'react';
+import Modal from 'react-modal';
 import Board from './board';
-import { LEVELS, COLORS } from './levels.js';
+import { LEVELS, COLORS, INSTRUCTION } from './levels.js';
 import { reduceRequirement } from './util/util.js';
+import { instructionStyle } from './util/modalStyle.js';
 
 class Game extends React.Component {
   constructor(props) {
@@ -13,10 +15,13 @@ class Game extends React.Component {
     this.state = {
       stepsLeft: this.level.maxSteps,
       requirement: this.level.requirement,
+      instructionOpen: false,
     };
 
     this.reduceStep = this.reduceStep.bind(this);
     this.reduceColor = this.reduceColor.bind(this);
+    this.openInstruction = this.openInstruction.bind(this);
+    this.closeInstruction = this.closeInstruction.bind(this);
   }
 
   reduceStep() {
@@ -33,9 +38,33 @@ class Game extends React.Component {
     });
   }
 
+  openInstruction() {
+    this.setState({
+      instructionOpen: true,
+    });
+  }
+
+  closeInstruction() {
+    this.setState({
+      instructionOpen: false,
+    });
+  }
+
+  componentWillMount() {
+    Modal.setAppElement(document.body);
+  }
+
   render() {
     return (
       <div>
+        <nav>
+          <div className="nav-wrapper">
+            <a href="#" className="brand-logo">&nbsp;Connector</a>
+            <ul id="nav-mobile" className="right hide-on-med-and-down">
+              <li><a href="#" onClick={this.openInstruction}>Instruction</a></li>
+            </ul>
+          </div>
+        </nav>
         <ul className="score-board">
           Level {this.props.level} connect
           {Object.keys(this.state.requirement).map((color, idx) => {
@@ -55,6 +84,21 @@ class Game extends React.Component {
           move={this.reduceStep}
           reduceColor={this.reduceColor}
         />
+        <Modal
+          isOpen={this.state.instructionOpen}
+          onRequestClose={this.closeInstruction}
+          style={instructionStyle}
+          contentLabel="Modal"
+          >
+          <div className="instruction-text">
+            <h1>Connector</h1>
+            <p>The goal of Connector is to eliminate required dots in limited steps. </p>
+            <p>To start with, you can connect two dots with same color to eliminate them. </p>
+            <p>Click and hold to connect (You can also go back before release)</p>
+            <p>If you see more dots are adjacent horizontally or vertically, you can connect all of them.</p>
+            <p>Connect four same color dots with a square and see what happens :)</p>
+          </div>
+        </Modal>
       </div>
     );
   }

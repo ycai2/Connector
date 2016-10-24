@@ -4,7 +4,7 @@ import Game from './game';
 class App extends React.Component {
   render() {
     return (
-      <div>
+      <div id="connector-app">
         <Game level={0} />
       </div>
     );

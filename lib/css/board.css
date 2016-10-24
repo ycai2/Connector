@@ -11,13 +11,9 @@
 
 .dot div {
   display: none;
-}
-
-.dot div {
-  display: none;
   content: '';
   position: absolute;
-  border: #e1e1e1 solid 4px;
+  border: #fff solid 4px;
   border-radius: 50%;
   top: 0;
   right: 0;
