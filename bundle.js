@@ -21454,6 +21454,8 @@
 	
 	var _levels = __webpack_require__(179);
 	
+	var _util = __webpack_require__(180);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21473,12 +21475,14 @@
 	    _this.level = _levels.LEVELS[_this.props.level];
 	    _this.width = _this.level.width;
 	    _this.height = _this.level.height;
+	    _this.colors = _levels.COLORS;
 	    _this.state = {
-	      stepLeft: _this.level.maxSteps,
+	      stepsLeft: _this.level.maxSteps,
 	      requirement: _this.level.requirement
 	    };
 	
 	    _this.reduceStep = _this.reduceStep.bind(_this);
+	
 	    return _this;
 	  }
 	
@@ -21486,7 +21490,16 @@
 	    key: 'reduceStep',
 	    value: function reduceStep() {
 	      this.setState({
-	        stepLeft: this.state.stepLeft - 1
+	        stepsLeft: this.state.stepsLeft - 1
+	      });
+	    }
+	  }, {
+	    key: 'reduceColor',
+	    value: function reduceColor() {
+	      var newRequirement = this.state.requirement;
+	      newRequirement = (0, _util.reduceRequirement)(newRequirement, elimination);
+	      this.setState({
+	        requirement: newRequirement
 	      });
 	    }
 	  }, {
@@ -21499,12 +21512,20 @@
 	          'div',
 	          null,
 	          'Steps Left: ',
-	          this.state.stepLeft
+	          this.state.stepsLeft
+	        ),
+	        _react2.default.createElement(
+	          'ul',
+	          { className: 'score-board' },
+	          Object.keys(this.colors).map(function (color, idx) {
+	            return _react2.default.createElement('li', { className: 'dot color-' + color, key: idx });
+	          })
 	        ),
 	        _react2.default.createElement(_board2.default, {
 	          width: this.width,
 	          height: this.height,
-	          move: this.reduceStep
+	          move: this.reduceStep,
+	          reduceColor: this.reduceColor
 	        })
 	      );
 	    }
@@ -21612,8 +21633,6 @@
 	      var color = dot.color;
 	      return function (e) {
 	        e.preventDefault();
-	        console.log(dot.id);
-	        console.log(dot.rowId, dot.colId);
 	        if (_this3.state.connecting && color === _this3.state.originColor) {
 	          if (_this3.validConnect(_this3.state.origin, { x: rowId, y: colId })) {
 	            _this3.handleConnection(e, rowId, colId, dot);
@@ -21641,6 +21660,7 @@
 	      if (this.state.connecting) {
 	        var newDotArray = this.state.dotArray;
 	        if (this.state.connection.length > 1) {
+	          this.props.move();
 	          newDotArray = this.eliminate(this.state.dotArray, this.state.connection);
 	        }
 	        this.setState({
@@ -21650,7 +21670,6 @@
 	          origin: null,
 	          dotArray: newDotArray
 	        });
-	        this.props.move();
 	      }
 	    }
 	  }, {
@@ -21914,6 +21933,31 @@
 	      "2": 10
 	    }
 	  }
+	};
+	
+	var COLORS = exports.COLORS = {
+	  "1": "#413c58",
+	  "2": "#f0b67f",
+	  "3": "#5979B2",
+	  "4": "#1ea896"
+	};
+
+/***/ },
+/* 180 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var reduceRequirement = exports.reduceRequirement = function reduceRequirement(requirement, elimination) {
+	  Object.keys(requirement).forEach(function (color) {
+	    if (color in elimination) {
+	      requirement[color] -= elimination[color];
+	    }
+	  });
+	  return requirement;
 	};
 
 /***/ }

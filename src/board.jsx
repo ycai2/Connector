@@ -61,8 +61,6 @@ class Board extends React.Component {
     const color = dot.color;
     return (e) => {
       e.preventDefault();
-      console.log(dot.id);
-      console.log(dot.rowId, dot.colId);
       if (this.state.connecting && color === this.state.originColor) {
         if (this.validConnect(this.state.origin, {x: rowId, y: colId})) {
           this.handleConnection(e, rowId, colId, dot);
@@ -88,6 +86,7 @@ class Board extends React.Component {
     if (this.state.connecting) {
       let newDotArray = this.state.dotArray;
       if (this.state.connection.length > 1) {
+        this.props.move();
         newDotArray = this.eliminate(this.state.dotArray, this.state.connection);
       }
       this.setState({
@@ -97,7 +96,6 @@ class Board extends React.Component {
         origin: null,
         dotArray: newDotArray,
       });
-      this.props.move();
     }
   }
 

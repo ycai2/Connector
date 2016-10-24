@@ -9,3 +9,10 @@ export const LEVELS = {
     }
   }
 };
+
+export const COLORS = {
+  "1": "#413c58",
+  "2": "#f0b67f",
+  "3": "#5979B2",
+  "4": "#1ea896",
+};
