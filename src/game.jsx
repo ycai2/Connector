@@ -38,7 +38,8 @@ class Game extends React.Component {
     });
   }
 
-  openInstruction() {
+  openInstruction(e) {
+    e.preventDefault();
     this.setState({
       instructionOpen: true,
     });
@@ -62,6 +63,7 @@ class Game extends React.Component {
             <a href="#" className="brand-logo">&nbsp;Connector</a>
             <ul id="nav-mobile" className="right hide-on-med-and-down">
               <li><a href="#" onClick={this.openInstruction}>Instruction</a></li>
+              <li><a href="https://github.com/ycai2/Connector">Github</a></li>
             </ul>
           </div>
         </nav>

@@ -21513,7 +21513,8 @@
 	    }
 	  }, {
 	    key: 'openInstruction',
-	    value: function openInstruction() {
+	    value: function openInstruction(e) {
+	      e.preventDefault();
 	      this.setState({
 	        instructionOpen: true
 	      });
@@ -21559,6 +21560,15 @@
 	                  'a',
 	                  { href: '#', onClick: this.openInstruction },
 	                  'Instruction'
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'li',
+	                null,
+	                _react2.default.createElement(
+	                  'a',
+	                  { href: 'https://github.com/ycai2/Connector' },
+	                  'Github'
 	                )
 	              )
 	            )
