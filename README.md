@@ -1,5 +1,8 @@
 Connector
 ==
+### Live Demo
+[Link](http://ycai2.github.io/connector/game.html)
+
 ### Introduction
 Connector is a html-based game inspired by Dots.
 
