@@ -21482,7 +21482,7 @@
 	    };
 	
 	    _this.reduceStep = _this.reduceStep.bind(_this);
-	
+	    _this.reduceColor = _this.reduceColor.bind(_this);
 	    return _this;
 	  }
 	
@@ -21495,7 +21495,7 @@
 	    }
 	  }, {
 	    key: 'reduceColor',
-	    value: function reduceColor() {
+	    value: function reduceColor(elimination) {
 	      var newRequirement = this.state.requirement;
 	      newRequirement = (0, _util.reduceRequirement)(newRequirement, elimination);
 	      this.setState({
@@ -21505,21 +21505,27 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+	
 	      return _react2.default.createElement(
 	        'div',
 	        null,
 	        _react2.default.createElement(
-	          'div',
-	          null,
-	          'Steps Left: ',
-	          this.state.stepsLeft
-	        ),
-	        _react2.default.createElement(
 	          'ul',
 	          { className: 'score-board' },
-	          Object.keys(this.colors).map(function (color, idx) {
-	            return _react2.default.createElement('li', { className: 'dot color-' + color, key: idx });
-	          })
+	          'Now connect',
+	          Object.keys(this.state.requirement).map(function (color, idx) {
+	            return _react2.default.createElement(
+	              'li',
+	              {
+	                className: 'dot color-' + color,
+	                key: idx },
+	              _this2.state.requirement[color]
+	            );
+	          }),
+	          'in ',
+	          this.state.stepsLeft,
+	          ' steps'
 	        ),
 	        _react2.default.createElement(_board2.default, {
 	          width: this.width,
@@ -21557,6 +21563,8 @@
 	var _dot = __webpack_require__(174);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -21692,6 +21700,7 @@
 	        //connected a square
 	        this.eliminateAll(connection[0].color);
 	      } else {
+	        this.props.reduceColor(_defineProperty({}, this.state.originColor, connection.length));
 	        connection.forEach(function (connectDot) {
 	          dotArray.forEach(function (col, colId) {
 	            var rowId = col.findIndex(function (dot) {
@@ -21953,7 +21962,7 @@
 	});
 	var reduceRequirement = exports.reduceRequirement = function reduceRequirement(requirement, elimination) {
 	  Object.keys(requirement).forEach(function (color) {
-	    if (color in elimination) {
+	    if (color in elimination && requirement[color] > 0) {
 	      requirement[color] -= elimination[color];
 	    }
 	  });

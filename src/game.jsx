@@ -16,7 +16,7 @@ class Game extends React.Component {
     };
 
     this.reduceStep = this.reduceStep.bind(this);
-
+    this.reduceColor = this.reduceColor.bind(this);
   }
 
   reduceStep() {
@@ -25,7 +25,7 @@ class Game extends React.Component {
     });
   }
 
-  reduceColor() {
+  reduceColor(elimination) {
     let newRequirement = this.state.requirement;
     newRequirement = reduceRequirement(newRequirement, elimination);
     this.setState({
@@ -36,11 +36,18 @@ class Game extends React.Component {
   render() {
     return (
       <div>
-        <div>Steps Left: {this.state.stepsLeft}</div>
         <ul className="score-board">
-          {Object.keys(this.colors).map((color, idx) => {
-            return (<li className={`dot color-${color}`} key={idx}></li>);
+          Now connect
+          {Object.keys(this.state.requirement).map((color, idx) => {
+            return (
+              <li
+                className={`dot color-${color}`}
+                key={idx}>
+                {this.state.requirement[color]}
+              </li>
+            );
           })}
+          in {this.state.stepsLeft} steps
         </ul>
         <Board
           width={this.width}

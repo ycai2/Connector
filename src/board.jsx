@@ -114,6 +114,7 @@ class Board extends React.Component {
       //connected a square
       this.eliminateAll(connection[0].color);
     } else {
+      this.props.reduceColor({[this.state.originColor]: connection.length});
       connection.forEach((connectDot) => {
         dotArray.forEach((col, colId) => {
           const rowId = col.findIndex((dot) => {
