@@ -7,12 +7,12 @@ Connector
 Connector is a html-based game inspired by Dots.
 
 ### MVP
-- [ ] Start or Restart a game
-- [ ] Populate a board of dots
-- [ ] Eliminate same colored dots when connected
-- [ ] Calculate score accordingly
-- [ ] A modal explaining rules
-- [ ] Production README
+- [x] Start a game
+- [x] Populate a board of dots
+- [x] Eliminate same colored dots when connected
+- [x] Calculate score accordingly
+- [x] A modal explaining rules
+- [x] Production README
 
 ### Wireframes
 
