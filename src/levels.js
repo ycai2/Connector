@@ -2,7 +2,7 @@ export const LEVELS = {
   "0": {
     "width": 4,
     "height": 4,
-    "maxSteps": 10,
+    "maxSteps": 5,
     "requirement": {
       "1": 4,
       "2": 4,
@@ -17,7 +17,7 @@ export const LEVELS = {
       "2": 8,
     }
   },
-  "3": {
+  "2": {
     "width": 5,
     "height": 5,
     "maxSteps": 10,

@@ -45,8 +45,8 @@ class Board extends React.Component {
     const originColor = dot.color;
     return (e) => {
       e.preventDefault();
-      console.log(dot.id);
-      console.log(dot.rowId, dot.colId);
+      // console.log(dot.id);
+      // console.log(dot.rowId, dot.colId);
       const newConnection = this.state.connection.concat(dot);
       if (!this.state.connecting) {
         this.setState({

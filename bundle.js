@@ -21509,13 +21509,13 @@
 	
 	var _board2 = _interopRequireDefault(_board);
 	
-	var _levels = __webpack_require__(203);
+	var _levels = __webpack_require__(204);
 	
-	var _util = __webpack_require__(204);
+	var _util = __webpack_require__(205);
 	
-	var _modalStyle = __webpack_require__(205);
+	var _modalStyle = __webpack_require__(206);
 	
-	var _reactAddonsCssTransitionGroup = __webpack_require__(196);
+	var _reactAddonsCssTransitionGroup = __webpack_require__(195);
 	
 	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
 	
@@ -21539,6 +21539,10 @@
 	    _this.width = _this.level.width;
 	    _this.height = _this.level.height;
 	    _this.colors = _levels.COLORS;
+	    _this.initialReq = {};
+	    Object.keys(_this.level.requirement).forEach(function (color) {
+	      _this.initialReq[color] = _this.level.requirement[color];
+	    });
 	    _this.state = {
 	      currentLevel: _this.props.level,
 	      stepsLeft: _this.level.maxSteps,
@@ -21618,7 +21622,8 @@
 	    }
 	  }, {
 	    key: 'nextLevel',
-	    value: function nextLevel() {
+	    value: function nextLevel(e) {
+	      e.preventDefault();
 	      var next = this.state.currentLevel + 1;
 	      this.setState({
 	        won: false,
@@ -21630,11 +21635,12 @@
 	    }
 	  }, {
 	    key: 'restart',
-	    value: function restart() {
+	    value: function restart(e) {
+	      e.preventDefault();
 	      this.setState({
 	        lost: false,
 	        stepsLeft: this.level.maxSteps,
-	        requirement: this.level.requirement
+	        requirement: this.initialReq
 	      });
 	    }
 	  }, {
@@ -21768,7 +21774,12 @@
 	          ),
 	          _react2.default.createElement(
 	            'button',
-	            { onClick: this.nextLevel },
+	            { onClick: this.nextLevel, className: 'waves-effect waves-light btn' },
+	            _react2.default.createElement(
+	              'i',
+	              { className: 'material-icons right' },
+	              'play_arrow'
+	            ),
 	            'Next Level'
 	          )
 	        ),
@@ -21787,7 +21798,12 @@
 	          ),
 	          _react2.default.createElement(
 	            'button',
-	            { onClick: this.restart },
+	            { onClick: this.restart, className: 'waves-effect waves-light btn' },
+	            _react2.default.createElement(
+	              'i',
+	              { className: 'material-icons right' },
+	              'replay'
+	            ),
 	            'Restart'
 	          )
 	        )
@@ -23781,13 +23797,13 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactAddonsCssTransitionGroup = __webpack_require__(196);
+	var _reactAddonsCssTransitionGroup = __webpack_require__(195);
 	
 	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
 	
-	var _dot = __webpack_require__(195);
+	var _dot = __webpack_require__(202);
 	
-	var _connection_board = __webpack_require__(206);
+	var _connection_board = __webpack_require__(203);
 	
 	var _connection_board2 = _interopRequireDefault(_connection_board);
 	
@@ -23849,8 +23865,8 @@
 	      var originColor = dot.color;
 	      return function (e) {
 	        e.preventDefault();
-	        console.log(dot.id);
-	        console.log(dot.rowId, dot.colId);
+	        // console.log(dot.id);
+	        // console.log(dot.rowId, dot.colId);
 	        var newConnection = _this2.state.connection.concat(dot);
 	        if (!_this2.state.connecting) {
 	          _this2.setState({
@@ -24063,74 +24079,10 @@
 /* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.DotObject = exports.Dot = undefined;
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Dot = exports.Dot = function (_React$Component) {
-	  _inherits(Dot, _React$Component);
-	
-	  function Dot(props) {
-	    _classCallCheck(this, Dot);
-	
-	    return _possibleConstructorReturn(this, (Dot.__proto__ || Object.getPrototypeOf(Dot)).call(this, props));
-	  }
-	
-	  _createClass(Dot, [{
-	    key: 'render',
-	    value: function render() {
-	      var dotColor = this.props.color;
-	      var connected = this.props.connected;
-	      var active = connected ? 'active' : '';
-	      return _react2.default.createElement(
-	        'li',
-	        {
-	          className: 'dot hvr-ripple-out color-' + dotColor,
-	          onMouseDown: this.props.onMouseDown,
-	          onMouseOver: this.props.onMouseOver
-	        },
-	        _react2.default.createElement('div', { className: '' + active })
-	      );
-	    }
-	  }]);
-	
-	  return Dot;
-	}(_react2.default.Component);
-	
-	var DotObject = exports.DotObject = function DotObject(id, colId, rowId, color) {
-	  _classCallCheck(this, DotObject);
-	
-	  this.id = id;
-	  this.colId = colId;
-	  this.rowId = rowId;
-	  this.color = color;
-	};
+	module.exports = __webpack_require__(196);
 
 /***/ },
 /* 196 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(197);
-
-/***/ },
-/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -24150,8 +24102,8 @@
 	
 	var React = __webpack_require__(2);
 	
-	var ReactTransitionGroup = __webpack_require__(198);
-	var ReactCSSTransitionGroupChild = __webpack_require__(200);
+	var ReactTransitionGroup = __webpack_require__(197);
+	var ReactCSSTransitionGroupChild = __webpack_require__(199);
 	
 	function createTransitionTimeoutPropValidator(transitionType) {
 	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
@@ -24222,7 +24174,7 @@
 	module.exports = ReactCSSTransitionGroup;
 
 /***/ },
-/* 198 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24242,7 +24194,7 @@
 	
 	var React = __webpack_require__(2);
 	var ReactInstanceMap = __webpack_require__(119);
-	var ReactTransitionChildMapping = __webpack_require__(199);
+	var ReactTransitionChildMapping = __webpack_require__(198);
 	
 	var emptyFunction = __webpack_require__(12);
 	
@@ -24474,7 +24426,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 199 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24583,7 +24535,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 200 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -24602,8 +24554,8 @@
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(35);
 	
-	var CSSCore = __webpack_require__(201);
-	var ReactTransitionEvents = __webpack_require__(202);
+	var CSSCore = __webpack_require__(200);
+	var ReactTransitionEvents = __webpack_require__(201);
 	
 	var onlyChild = __webpack_require__(33);
 	
@@ -24755,7 +24707,7 @@
 	module.exports = ReactCSSTransitionGroupChild;
 
 /***/ },
-/* 201 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -24882,7 +24834,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 202 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -24960,7 +24912,116 @@
 	module.exports = ReactTransitionEvents;
 
 /***/ },
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.DotObject = exports.Dot = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Dot = exports.Dot = function (_React$Component) {
+	  _inherits(Dot, _React$Component);
+	
+	  function Dot(props) {
+	    _classCallCheck(this, Dot);
+	
+	    return _possibleConstructorReturn(this, (Dot.__proto__ || Object.getPrototypeOf(Dot)).call(this, props));
+	  }
+	
+	  _createClass(Dot, [{
+	    key: 'render',
+	    value: function render() {
+	      var dotColor = this.props.color;
+	      var connected = this.props.connected;
+	      var active = connected ? 'active' : '';
+	      return _react2.default.createElement(
+	        'li',
+	        {
+	          className: 'dot hvr-ripple-out color-' + dotColor,
+	          onMouseDown: this.props.onMouseDown,
+	          onMouseOver: this.props.onMouseOver
+	        },
+	        _react2.default.createElement('div', { className: '' + active })
+	      );
+	    }
+	  }]);
+	
+	  return Dot;
+	}(_react2.default.Component);
+	
+	var DotObject = exports.DotObject = function DotObject(id, colId, rowId, color) {
+	  _classCallCheck(this, DotObject);
+	
+	  this.id = id;
+	  this.colId = colId;
+	  this.rowId = rowId;
+	  this.color = color;
+	};
+
+/***/ },
 /* 203 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var ConnectionBoard = function (_React$Component) {
+	  _inherits(ConnectionBoard, _React$Component);
+	
+	  function ConnectionBoard() {
+	    _classCallCheck(this, ConnectionBoard);
+	
+	    return _possibleConstructorReturn(this, (ConnectionBoard.__proto__ || Object.getPrototypeOf(ConnectionBoard)).apply(this, arguments));
+	  }
+	
+	  _createClass(ConnectionBoard, [{
+	    key: "render",
+	    value: function render() {
+	      return _react2.default.createElement("div", { className: "connection-board" });
+	    }
+	  }]);
+	
+	  return ConnectionBoard;
+	}(_react2.default.Component);
+	
+	exports.default = ConnectionBoard;
+
+/***/ },
+/* 204 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24972,7 +25033,7 @@
 	  "0": {
 	    "width": 4,
 	    "height": 4,
-	    "maxSteps": 10,
+	    "maxSteps": 5,
 	    "requirement": {
 	      "1": 4,
 	      "2": 4
@@ -24987,7 +25048,7 @@
 	      "2": 8
 	    }
 	  },
-	  "3": {
+	  "2": {
 	    "width": 5,
 	    "height": 5,
 	    "maxSteps": 10,
@@ -25007,7 +25068,7 @@
 	};
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25028,7 +25089,7 @@
 	};
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -25074,51 +25135,6 @@
 	    bottom: '200px'
 	  }
 	};
-
-/***/ },
-/* 206 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var ConnectionBoard = function (_React$Component) {
-	  _inherits(ConnectionBoard, _React$Component);
-	
-	  function ConnectionBoard() {
-	    _classCallCheck(this, ConnectionBoard);
-	
-	    return _possibleConstructorReturn(this, (ConnectionBoard.__proto__ || Object.getPrototypeOf(ConnectionBoard)).apply(this, arguments));
-	  }
-	
-	  _createClass(ConnectionBoard, [{
-	    key: "render",
-	    value: function render() {
-	      return _react2.default.createElement("div", { className: "connection-board" });
-	    }
-	  }]);
-	
-	  return ConnectionBoard;
-	}(_react2.default.Component);
-	
-	exports.default = ConnectionBoard;
 
 /***/ }
 /******/ ]);

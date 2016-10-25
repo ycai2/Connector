@@ -9,10 +9,14 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.level = LEVELS[this.props.level]
+    this.level = LEVELS[this.props.level];
     this.width = this.level.width;
     this.height = this.level.height;
     this.colors = COLORS;
+    this.initialReq = {};
+    Object.keys(this.level.requirement).forEach((color) => {
+      this.initialReq[color] = this.level.requirement[color];
+    });
     this.state = {
       currentLevel: this.props.level,
       stepsLeft: this.level.maxSteps,
@@ -81,7 +85,8 @@ class Game extends React.Component {
     });
   }
 
-  nextLevel() {
+  nextLevel(e) {
+    e.preventDefault();
     const next = this.state.currentLevel + 1;
     this.setState({
       won: false,
@@ -92,11 +97,12 @@ class Game extends React.Component {
     });
   }
 
-  restart() {
+  restart(e) {
+    e.preventDefault();
     this.setState({
       lost: false,
       stepsLeft: this.level.maxSteps,
-      requirement: this.level.requirement,
+      requirement: this.initialReq,
     });
   }
 
@@ -161,7 +167,7 @@ class Game extends React.Component {
           <div className="won-popup">
             Hey, you won.
           </div>
-          <button onClick={this.nextLevel}>Next Level</button>
+          <button onClick={this.nextLevel} className="waves-effect waves-light btn"><i className="material-icons right">play_arrow</i>Next Level</button>
         </Modal>
         <Modal
           isOpen={this.state.lost}
@@ -172,7 +178,7 @@ class Game extends React.Component {
           <div className="lost-popup">
             Sorry, you lost.
           </div>
-          <button onClick={this.restart}>Restart</button>
+          <button onClick={this.restart} className="waves-effect waves-light btn"><i className="material-icons right">replay</i>Restart</button>
         </Modal>
       </div>
     );
