@@ -21540,30 +21540,63 @@
 	    _this.height = _this.level.height;
 	    _this.colors = _levels.COLORS;
 	    _this.state = {
+	      currentLevel: _this.props.level,
 	      stepsLeft: _this.level.maxSteps,
 	      requirement: _this.level.requirement,
-	      instructionOpen: false
+	      instructionOpen: false,
+	      won: false,
+	      lost: false
 	    };
 	
 	    _this.reduceStep = _this.reduceStep.bind(_this);
 	    _this.reduceColor = _this.reduceColor.bind(_this);
 	    _this.openInstruction = _this.openInstruction.bind(_this);
 	    _this.closeInstruction = _this.closeInstruction.bind(_this);
+	    _this.nextLevel = _this.nextLevel.bind(_this);
+	    _this.restart = _this.restart.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(Game, [{
 	    key: 'reduceStep',
 	    value: function reduceStep() {
-	      this.setState({
-	        stepsLeft: this.state.stepsLeft - 1
-	      });
+	      var _this2 = this;
+	
+	      if (this.state.stepsLeft <= 1) {
+	        Object.keys(this.state.requirement).forEach(function (req) {
+	          if (_this2.state.requirement[req] > 0) {
+	            _this2.setState({
+	              lost: true,
+	              won: false,
+	              stepsLeft: 0
+	            });
+	            return;
+	          }
+	        });
+	      } else {
+	        this.setState({
+	          stepsLeft: this.state.stepsLeft - 1
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'reduceColor',
 	    value: function reduceColor(elimination) {
+	      var _this3 = this;
+	
 	      var newRequirement = this.state.requirement;
 	      newRequirement = (0, _util.reduceRequirement)(newRequirement, elimination);
+	      var won = Object.keys(newRequirement).every(function (req) {
+	        return _this3.state.requirement[req] === 0;
+	      });
+	      if (won) {
+	        this.setState({
+	          won: true,
+	          lost: false,
+	          stepsLeft: 0
+	        });
+	        return;
+	      }
 	      this.setState({
 	        requirement: newRequirement
 	      });
@@ -21584,6 +21617,27 @@
 	      });
 	    }
 	  }, {
+	    key: 'nextLevel',
+	    value: function nextLevel() {
+	      var next = this.state.currentLevel + 1;
+	      this.setState({
+	        won: false,
+	        lost: false,
+	        stepsLeft: _levels.LEVELS[next].maxSteps,
+	        requirement: _levels.LEVELS[next].requirement,
+	        currentLevel: next
+	      });
+	    }
+	  }, {
+	    key: 'restart',
+	    value: function restart() {
+	      this.setState({
+	        lost: false,
+	        stepsLeft: this.level.maxSteps,
+	        requirement: this.level.requirement
+	      });
+	    }
+	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      _reactModal2.default.setAppElement(document.body);
@@ -21591,7 +21645,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this4 = this;
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -21635,7 +21689,7 @@
 	          'ul',
 	          { className: 'score-board' },
 	          'Level ',
-	          this.props.level,
+	          this.state.currentLevel,
 	          ' connect',
 	          Object.keys(this.state.requirement).map(function (color, idx) {
 	            return _react2.default.createElement(
@@ -21643,7 +21697,7 @@
 	              {
 	                className: 'dot color-' + color,
 	                key: idx },
-	              _this2.state.requirement[color]
+	              _this4.state.requirement[color]
 	            );
 	          }),
 	          'in ',
@@ -21697,6 +21751,44 @@
 	              null,
 	              'Connect four same color dots with a square and see what happens :)'
 	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          _reactModal2.default,
+	          {
+	            isOpen: this.state.won,
+	            onRequestClose: this.nextLevel,
+	            style: _modalStyle.resultStyle,
+	            contentLabel: 'won'
+	          },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'won-popup' },
+	            'Hey, you won.'
+	          ),
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: this.nextLevel },
+	            'Next Level'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          _reactModal2.default,
+	          {
+	            isOpen: this.state.lost,
+	            onRequestClose: this.restart,
+	            style: _modalStyle.resultStyle,
+	            contentLabel: 'lost'
+	          },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'lost-popup' },
+	            'Sorry, you lost.'
+	          ),
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: this.restart },
+	            'Restart'
 	          )
 	        )
 	      );
@@ -23689,11 +23781,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _dot = __webpack_require__(195);
-	
 	var _reactAddonsCssTransitionGroup = __webpack_require__(196);
 	
 	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
+	
+	var _dot = __webpack_require__(195);
+	
+	var _connection_board = __webpack_require__(206);
+	
+	var _connection_board2 = _interopRequireDefault(_connection_board);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -23828,11 +23924,14 @@
 	      var _this4 = this;
 	
 	      var maxDotId = this.state.maxDotId;
+	      var newState = {};
 	
 	      if (connection.length >= 5 && connection[0].id === connection[connection.length - 1].id) {
 	        //connected a square
-	        //this.eliminateAll(connection[0].color);
-	        console.log("explode!");
+	
+	        var result = this.eliminateAll(connection[0].color);
+	        newState = result.newState;
+	        this.props.reduceColor(_defineProperty({}, this.state.originColor, result.eliminatedDots));
 	      } else {
 	        this.props.reduceColor(_defineProperty({}, this.state.originColor, connection.length));
 	        connection.forEach(function (connectDot) {
@@ -23847,10 +23946,9 @@
 	            }
 	          });
 	        });
+	        newState = { maxDotId: maxDotId };
 	      }
-	      this.setState({
-	        maxDotId: maxDotId
-	      });
+	      this.setState(newState);
 	
 	      return dotArray;
 	    }
@@ -23860,13 +23958,23 @@
 	      var _this5 = this;
 	
 	      var newDotArray = this.state.dotArray;
-	      this.state.dotArray.forEach(function (col) {
+	      var maxDotId = this.state.maxDotId;
+	      var newDotsCounter = 0;
+	      newDotArray.forEach(function (col) {
 	        col.forEach(function (dot) {
 	          if (dot.color === color) {
-	            _this5.eliminate(newDotArray, [dot]);
+	            col.splice(dot.rowId, 1);
+	            maxDotId++;
+	            _this5.reindex(col, dot.rowId);
+	            col.unshift(new _dot.DotObject(maxDotId, dot.colId, 0, Math.floor(Math.random() * 4 + 1)));
 	          }
 	        });
 	      });
+	
+	      return {
+	        newState: { dotArray: newDotArray, maxDotId: maxDotId },
+	        eliminatedDots: maxDotId - this.state.maxDotId
+	      };
 	    }
 	  }, {
 	    key: 'validConnect',
@@ -23938,7 +24046,8 @@
 	              )
 	            );
 	          })
-	        )
+	        ),
+	        _react2.default.createElement(_connection_board2.default, { width: this.props.width, height: this.props.height })
 	      );
 	    }
 	  }]);
@@ -24861,12 +24970,31 @@
 	});
 	var LEVELS = exports.LEVELS = {
 	  "0": {
-	    "width": 6,
-	    "height": 6,
+	    "width": 4,
+	    "height": 4,
 	    "maxSteps": 10,
 	    "requirement": {
-	      "1": 20,
-	      "2": 20
+	      "1": 4,
+	      "2": 4
+	    }
+	  },
+	  "1": {
+	    "width": 5,
+	    "height": 5,
+	    "maxSteps": 10,
+	    "requirement": {
+	      "1": 8,
+	      "2": 8
+	    }
+	  },
+	  "3": {
+	    "width": 5,
+	    "height": 5,
+	    "maxSteps": 10,
+	    "requirement": {
+	      "1": 8,
+	      "2": 8,
+	      "3": 8
 	    }
 	  }
 	};
@@ -24927,6 +25055,70 @@
 	    bottom: '200px'
 	  }
 	};
+	
+	var resultStyle = exports.resultStyle = {
+	  overlay: {
+	    position: 'fixed',
+	    backgroundColor: 'rgba(0, 0, 0, 0.75)'
+	  },
+	  content: {
+	    position: 'absolute',
+	    background: '#fff',
+	    overflow: 'auto',
+	    WebkitOverflowScrolling: 'touch',
+	    borderRadius: '0',
+	    outline: 'none',
+	    padding: '20px',
+	    left: '100px',
+	    right: '100px',
+	    bottom: '200px'
+	  }
+	};
+
+/***/ },
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var ConnectionBoard = function (_React$Component) {
+	  _inherits(ConnectionBoard, _React$Component);
+	
+	  function ConnectionBoard() {
+	    _classCallCheck(this, ConnectionBoard);
+	
+	    return _possibleConstructorReturn(this, (ConnectionBoard.__proto__ || Object.getPrototypeOf(ConnectionBoard)).apply(this, arguments));
+	  }
+	
+	  _createClass(ConnectionBoard, [{
+	    key: "render",
+	    value: function render() {
+	      return _react2.default.createElement("div", { className: "connection-board" });
+	    }
+	  }]);
+	
+	  return ConnectionBoard;
+	}(_react2.default.Component);
+	
+	exports.default = ConnectionBoard;
 
 /***/ }
 /******/ ]);

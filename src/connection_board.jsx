@@ -2,9 +2,7 @@ import React from 'react';
 
 class ConnectionBoard extends React.Component {
   render() {
-    <ul>
-    
-    </ul>
+    return (<div className="connection-board"></div>);
   }
 }
 

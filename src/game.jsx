@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import Board from './board';
 import { LEVELS, COLORS, INSTRUCTION } from './levels.js';
 import { reduceRequirement } from './util/util.js';
-import { instructionStyle } from './util/modalStyle.js';
+import { instructionStyle, resultStyle } from './util/modalStyle.js';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Game extends React.Component {
@@ -14,26 +14,55 @@ class Game extends React.Component {
     this.height = this.level.height;
     this.colors = COLORS;
     this.state = {
+      currentLevel: this.props.level,
       stepsLeft: this.level.maxSteps,
       requirement: this.level.requirement,
       instructionOpen: false,
+      won: false,
+      lost: false,
     };
 
     this.reduceStep = this.reduceStep.bind(this);
     this.reduceColor = this.reduceColor.bind(this);
     this.openInstruction = this.openInstruction.bind(this);
     this.closeInstruction = this.closeInstruction.bind(this);
+    this.nextLevel = this.nextLevel.bind(this);
+    this.restart = this.restart.bind(this);
   }
 
   reduceStep() {
-    this.setState({
-      stepsLeft: this.state.stepsLeft - 1,
-    });
+    if (this.state.stepsLeft <= 1) {
+      Object.keys(this.state.requirement).forEach((req) => {
+        if (this.state.requirement[req] > 0) {
+          this.setState({
+            lost: true,
+            won: false,
+            stepsLeft: 0,
+          });
+          return;
+        }
+      });
+    } else {
+      this.setState({
+        stepsLeft: this.state.stepsLeft - 1,
+      });
+    }
   }
 
   reduceColor(elimination) {
     let newRequirement = this.state.requirement;
     newRequirement = reduceRequirement(newRequirement, elimination);
+    const won = Object.keys(newRequirement).every((req) => {
+      return this.state.requirement[req] === 0;
+    });
+    if (won) {
+      this.setState({
+        won: true,
+        lost: false,
+        stepsLeft: 0,
+      });
+      return;
+    }
     this.setState({
       requirement: newRequirement,
     });
@@ -49,6 +78,25 @@ class Game extends React.Component {
   closeInstruction() {
     this.setState({
       instructionOpen: false,
+    });
+  }
+
+  nextLevel() {
+    const next = this.state.currentLevel + 1;
+    this.setState({
+      won: false,
+      lost: false,
+      stepsLeft: LEVELS[next].maxSteps,
+      requirement: LEVELS[next].requirement,
+      currentLevel: next,
+    });
+  }
+
+  restart() {
+    this.setState({
+      lost: false,
+      stepsLeft: this.level.maxSteps,
+      requirement: this.level.requirement,
     });
   }
 
@@ -70,7 +118,7 @@ class Game extends React.Component {
         </nav>
 
         <ul className="score-board">
-          Level {this.props.level} connect
+          Level {this.state.currentLevel} connect
           {Object.keys(this.state.requirement).map((color, idx) => {
             return (
               <li
@@ -102,6 +150,29 @@ class Game extends React.Component {
             <p>If you see more dots are adjacent horizontally or vertically, you can connect all of them.</p>
             <p>Connect four same color dots with a square and see what happens :)</p>
           </div>
+        </Modal>
+
+        <Modal
+          isOpen={this.state.won}
+          onRequestClose={this.nextLevel}
+          style={resultStyle}
+          contentLabel="won"
+        >
+          <div className="won-popup">
+            Hey, you won.
+          </div>
+          <button onClick={this.nextLevel}>Next Level</button>
+        </Modal>
+        <Modal
+          isOpen={this.state.lost}
+          onRequestClose={this.restart}
+          style={resultStyle}
+          contentLabel="lost"
+        >
+          <div className="lost-popup">
+            Sorry, you lost.
+          </div>
+          <button onClick={this.restart}>Restart</button>
         </Modal>
       </div>
     );

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Dot, DotObject } from './dot';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { Dot, DotObject } from './dot';
+import ConnectionBoard from './connection_board';
 
 class Board extends React.Component {
   constructor(props) {
@@ -110,11 +111,14 @@ class Board extends React.Component {
 
   eliminate(dotArray, connection) {
     let maxDotId = this.state.maxDotId;
+    let newState = {};
 
     if (connection.length >= 5 && connection[0].id === connection[connection.length - 1].id) {
       //connected a square
-      //this.eliminateAll(connection[0].color);
-      console.log("explode!");
+
+      const result = this.eliminateAll(connection[0].color);
+      newState = result.newState;
+      this.props.reduceColor({[this.state.originColor]: result.eliminatedDots});
     } else {
       this.props.reduceColor({[this.state.originColor]: connection.length});
       connection.forEach((connectDot) => {
@@ -134,25 +138,38 @@ class Board extends React.Component {
           }
         });
       });
+      newState = {maxDotId};
     }
-    this.setState({
-      maxDotId,
-    });
+    this.setState(newState);
 
     return dotArray;
   }
 
   eliminateAll(color) {
     let newDotArray = this.state.dotArray;
-    this.state.dotArray.forEach((col) => {
+    let maxDotId = this.state.maxDotId;
+    let newDotsCounter = 0;
+    newDotArray.forEach((col) => {
       col.forEach((dot) => {
         if (dot.color === color) {
-          this.eliminate(newDotArray, [dot]);
+          col.splice(dot.rowId, 1);
+          maxDotId++;
+          this.reindex(col, dot.rowId);
+          col.unshift(new DotObject(
+            maxDotId,
+            dot.colId,
+            0,
+            Math.floor(Math.random() * 4 + 1)
+          ));
         }
       });
     });
-  }
 
+    return {
+      newState: {dotArray: newDotArray, maxDotId},
+      eliminatedDots: maxDotId - this.state.maxDotId,
+    };
+  }
 
   validConnect(cur, next) {
     const inConn = this.state.connection.findIndex((dot) => {
@@ -217,6 +234,7 @@ class Board extends React.Component {
             );
           })}
         </ul>
+        <ConnectionBoard width={this.props.width} height={this.props.height} />
       </div>
     );
   }
