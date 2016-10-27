@@ -2,3 +2,5 @@
 .map
 .js.map
 /node_modules
+
+*.map
