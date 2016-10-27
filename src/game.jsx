@@ -163,6 +163,7 @@ class Game extends React.Component {
           onRequestClose={this.nextLevel}
           style={resultStyle}
           contentLabel="won"
+          shouldCloseOnOverlayClick={false}
         >
           <div className="won-popup">
             Hey, you won.
@@ -174,6 +175,7 @@ class Game extends React.Component {
           onRequestClose={this.restart}
           style={resultStyle}
           contentLabel="lost"
+          shouldCloseOnOverlayClick={false}
         >
           <div className="lost-popup">
             Sorry, you lost.

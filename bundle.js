@@ -21765,7 +21765,8 @@
 	            isOpen: this.state.won,
 	            onRequestClose: this.nextLevel,
 	            style: _modalStyle.resultStyle,
-	            contentLabel: 'won'
+	            contentLabel: 'won',
+	            shouldCloseOnOverlayClick: false
 	          },
 	          _react2.default.createElement(
 	            'div',
@@ -21789,7 +21790,8 @@
 	            isOpen: this.state.lost,
 	            onRequestClose: this.restart,
 	            style: _modalStyle.resultStyle,
-	            contentLabel: 'lost'
+	            contentLabel: 'lost',
+	            shouldCloseOnOverlayClick: false
 	          },
 	          _react2.default.createElement(
 	            'div',
@@ -25033,7 +25035,7 @@
 	  "0": {
 	    "width": 4,
 	    "height": 4,
-	    "maxSteps": 5,
+	    "maxSteps": 1,
 	    "requirement": {
 	      "1": 4,
 	      "2": 4
@@ -25120,7 +25122,9 @@
 	var resultStyle = exports.resultStyle = {
 	  overlay: {
 	    position: 'fixed',
-	    backgroundColor: 'rgba(0, 0, 0, 0.75)'
+	    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+	    display: 'flex',
+	    justifyContent: 'center'
 	  },
 	  content: {
 	    position: 'absolute',
@@ -25130,9 +25134,11 @@
 	    borderRadius: '0',
 	    outline: 'none',
 	    padding: '20px',
-	    left: '100px',
-	    right: '100px',
-	    bottom: '200px'
+	    top: '100px',
+	    left: 'auto',
+	    bottom: 'initial',
+	    right: 'auto'
+	
 	  }
 	};
 

@@ -21,7 +21,9 @@ export const instructionStyle = {
 export const resultStyle = {
   overlay : {
     position          : 'fixed',
-    backgroundColor   : 'rgba(0, 0, 0, 0.75)'
+    backgroundColor   : 'rgba(0, 0, 0, 0.75)',
+    display           : 'flex',
+    justifyContent    : 'center'
   },
   content : {
     position                   : 'absolute',
@@ -31,8 +33,10 @@ export const resultStyle = {
     borderRadius               : '0',
     outline                    : 'none',
     padding                    : '20px',
-    left                       : '100px',
-    right                      : '100px',
-    bottom                     : '200px',
+    top                        : '100px',
+    left                       : 'auto',
+    bottom                     : 'initial',
+    right                      : 'auto',
+
   }
 }
