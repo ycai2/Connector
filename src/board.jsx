@@ -7,7 +7,7 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dotArray: this.populateBoard(),
+      dotArray: [],
       connecting: false,
       connection: [],
       originColor: 0,
@@ -22,6 +22,12 @@ class Board extends React.Component {
     this.handleConnection = this.handleConnection.bind(this);
     this.eliminate = this.eliminate.bind(this);
     this.eliminateAll = this.eliminateAll.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({
+      dotArray: this.populateBoard(),
+    });
   }
 
   populateBoard() {

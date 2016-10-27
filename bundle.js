@@ -21549,7 +21549,8 @@
 	      requirement: _this.level.requirement,
 	      instructionOpen: false,
 	      won: false,
-	      lost: false
+	      lost: false,
+	      gameOver: false
 	    };
 	
 	    _this.reduceStep = _this.reduceStep.bind(_this);
@@ -21593,13 +21594,17 @@
 	      var won = Object.keys(newRequirement).every(function (req) {
 	        return _this3.state.requirement[req] === 0;
 	      });
-	      if (won) {
+	      if (won && this.state.currentLevel < 2) {
 	        this.setState({
 	          won: true,
 	          lost: false,
 	          stepsLeft: 0
 	        });
 	        return;
+	      } else if (won) {
+	        this.setState({
+	          gameOver: true
+	        });
 	      }
 	      this.setState({
 	        requirement: newRequirement
@@ -21694,9 +21699,13 @@
 	        _react2.default.createElement(
 	          'ul',
 	          { className: 'score-board' },
-	          'Level ',
-	          this.state.currentLevel,
-	          ' connect',
+	          _react2.default.createElement(
+	            'b',
+	            null,
+	            'Level ',
+	            this.state.currentLevel
+	          ),
+	          '\xA0\xA0connect',
 	          Object.keys(this.state.requirement).map(function (color, idx) {
 	            return _react2.default.createElement(
 	              'li',
@@ -21797,6 +21806,31 @@
 	            'div',
 	            { className: 'lost-popup' },
 	            'Sorry, you lost.'
+	          ),
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: this.restart, className: 'waves-effect waves-light btn' },
+	            _react2.default.createElement(
+	              'i',
+	              { className: 'material-icons right' },
+	              'replay'
+	            ),
+	            'Restart'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          _reactModal2.default,
+	          {
+	            isOpen: this.state.gameOver,
+	            onRequestClose: this.restart,
+	            style: _modalStyle.resultStyle,
+	            contentLabel: 'gameOver',
+	            shouldCloseOnOverlayClick: false
+	          },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'lost-popup' },
+	            'Congrats! You won!'
 	          ),
 	          _react2.default.createElement(
 	            'button',
@@ -23828,7 +23862,7 @@
 	    var _this = _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
 	
 	    _this.state = {
-	      dotArray: _this.populateBoard(),
+	      dotArray: [],
 	      connecting: false,
 	      connection: [],
 	      originColor: 0,
@@ -23847,6 +23881,13 @@
 	  }
 	
 	  _createClass(Board, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.setState({
+	        dotArray: this.populateBoard()
+	      });
+	    }
+	  }, {
 	    key: 'populateBoard',
 	    value: function populateBoard() {
 	      var dotArray = [];
@@ -25033,31 +25074,32 @@
 	});
 	var LEVELS = exports.LEVELS = {
 	  "0": {
-	    "width": 4,
-	    "height": 4,
-	    "maxSteps": 1,
+	    "width": 5,
+	    "height": 5,
+	    "maxSteps": 10,
 	    "requirement": {
-	      "1": 4,
-	      "2": 4
+	      "1": 10,
+	      "2": 10
 	    }
 	  },
 	  "1": {
-	    "width": 5,
-	    "height": 5,
+	    "width": 6,
+	    "height": 6,
 	    "maxSteps": 10,
 	    "requirement": {
-	      "1": 8,
-	      "2": 8
+	      "1": 15,
+	      "2": 15
 	    }
 	  },
 	  "2": {
-	    "width": 5,
-	    "height": 5,
+	    "width": 7,
+	    "height": 7,
 	    "maxSteps": 10,
 	    "requirement": {
-	      "1": 8,
-	      "2": 8,
-	      "3": 8
+	      "1": 15,
+	      "2": 15,
+	      "3": 15,
+	      "4": 15
 	    }
 	  }
 	};
@@ -25137,7 +25179,12 @@
 	    top: '100px',
 	    left: 'auto',
 	    bottom: 'initial',
-	    right: 'auto'
+	    right: 'auto',
+	    display: 'flex',
+	    flexDirection: 'column',
+	    justifyContent: 'center',
+	    fontSize: '20px',
+	    alignItems: 'center'
 	
 	  }
 	};

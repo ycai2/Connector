@@ -37,6 +37,11 @@ export const resultStyle = {
     left                       : 'auto',
     bottom                     : 'initial',
     right                      : 'auto',
+    display                    : 'flex',
+    flexDirection              : 'column',
+    justifyContent             : 'center',
+    fontSize                   : '20px',
+    alignItems                 : 'center'
 
   }
 }

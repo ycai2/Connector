@@ -24,6 +24,7 @@ class Game extends React.Component {
       instructionOpen: false,
       won: false,
       lost: false,
+      gameOver: false,
     };
 
     this.reduceStep = this.reduceStep.bind(this);
@@ -59,13 +60,17 @@ class Game extends React.Component {
     const won = Object.keys(newRequirement).every((req) => {
       return this.state.requirement[req] === 0;
     });
-    if (won) {
+    if (won && this.state.currentLevel < 2) {
       this.setState({
         won: true,
         lost: false,
         stepsLeft: 0,
       });
       return;
+    } else if (won) {
+      this.setState({
+        gameOver: true,
+      });
     }
     this.setState({
       requirement: newRequirement,
@@ -124,7 +129,8 @@ class Game extends React.Component {
         </nav>
 
         <ul className="score-board">
-          Level {this.state.currentLevel} connect
+          <b>Level {this.state.currentLevel}</b>
+          &nbsp;&nbsp;connect
           {Object.keys(this.state.requirement).map((color, idx) => {
             return (
               <li
@@ -179,6 +185,18 @@ class Game extends React.Component {
         >
           <div className="lost-popup">
             Sorry, you lost.
+          </div>
+          <button onClick={this.restart} className="waves-effect waves-light btn"><i className="material-icons right">replay</i>Restart</button>
+        </Modal>
+        <Modal
+          isOpen={this.state.gameOver}
+          onRequestClose={this.restart}
+          style={resultStyle}
+          contentLabel="gameOver"
+          shouldCloseOnOverlayClick={false}
+        >
+          <div className="lost-popup">
+            Congrats! You won!
           </div>
           <button onClick={this.restart} className="waves-effect waves-light btn"><i className="material-icons right">replay</i>Restart</button>
         </Modal>

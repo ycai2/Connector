@@ -1,30 +1,31 @@
 export const LEVELS = {
   "0": {
-    "width": 4,
-    "height": 4,
-    "maxSteps": 1,
+    "width": 5,
+    "height": 5,
+    "maxSteps": 10,
     "requirement": {
-      "1": 4,
-      "2": 4,
+      "1": 10,
+      "2": 10,
     }
   },
   "1": {
-    "width": 5,
-    "height": 5,
+    "width": 6,
+    "height": 6,
     "maxSteps": 10,
     "requirement": {
-      "1": 8,
-      "2": 8,
+      "1": 15,
+      "2": 15,
     }
   },
   "2": {
-    "width": 5,
-    "height": 5,
+    "width": 7,
+    "height": 7,
     "maxSteps": 10,
     "requirement": {
-      "1": 8,
-      "2": 8,
-      "3": 8,
+      "1": 15,
+      "2": 15,
+      "3": 15,
+      "4": 15
     }
   }
 };
